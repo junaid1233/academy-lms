@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1180" />
+  <title>Courses — LMS Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/logo.svg" />
+</head>
+<body>
+  <div class="promo">Filter by <strong>level</strong> first — then topic. That’s how this catalog stays sane.</div>
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="logo" href="index.html"><img src="assets/logo.svg" alt="" /><span class="logo-text">LMS <span>Academy</span></span></a>
+      <nav class="nav">
+        <div class="drop">
+          <button type="button">Explore ▾</button>
+          <div class="mega">
+            <a href="courses.html?cat=basics"><div>Computer Basics<small>Windows, Office, internet</small></div></a>
+            <a href="courses.html?cat=web"><div>Web Development<small>HTML to Next.js</small></div></a>
+            <a href="courses.html?cat=programming"><div>Programming<small>Python, JS, Java</small></div></a>
+            <a href="courses.html?cat=datascience"><div>Data Science<small>SQL to analysis</small></div></a>
+            <a href="courses.html?cat=ai"><div>AI & Machine Learning<small>ML to PyTorch</small></div></a>
+            <a href="courses.html?cat=cloud"><div>Cloud & DevOps<small>AWS, Docker, K8s</small></div></a>
+            <a href="courses.html?cat=security"><div>Cybersecurity<small>Defense and labs</small></div></a>
+            <a href="courses.html?cat=cs"><div>Computer Science<small>DSA & systems</small></div></a>
+            <a href="courses.html?cat=math"><div>Math for IT<small>Algebra, stats, linear algebra</small></div></a>
+          </div>
+        </div>
+        <a href="courses.html">Courses</a>
+        <a href="study.html">Study Hub</a>
+        <a href="paths.html">Career Paths</a>
+        <a href="certifications.html">Certificates</a>
+      </nav>
+      <form class="search" data-search-form>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+        <input type="search" placeholder="Search the catalog…" />
+      </form>
+      <div class="header-actions">
+        <a class="btn btn-ghost" href="login.html">Log in</a>
+        <a class="btn btn-coral" href="register.html">Join free</a>
+        <button class="menu-btn" id="menu-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="courses.html">Courses</a><a href="study.html">Study Hub</a><a href="paths.html">Career Paths</a><a href="certifications.html">Certificates</a><a href="login.html">Log in</a>
+  </div>
+
+  <div class="wrap page-head">
+    <div class="crumbs"><a href="index.html">Home</a> / Courses</div>
+    <h1>IT course catalog</h1>
+    <p class="muted">Click a level — only that level’s courses appear. Beginner is MS Office & computer basics, not coding.</p>
+  </div>
+
+  <div class="wrap layout">
+    <aside class="filters">
+      <h3>Level</h3>
+      <label><input type="radio" name="lvl" value="all" checked /> All levels</label>
+      <label><input type="radio" name="lvl" value="Beginner" /> Beginner</label>
+      <label><input type="radio" name="lvl" value="Intermediate" /> Intermediate</label>
+      <label><input type="radio" name="lvl" value="Advanced" /> Advanced</label>
+      <label><input type="radio" name="lvl" value="Expert" /> Expert</label>
+      <h3>Category</h3>
+      <label><input type="radio" name="cat" value="all" checked /> All topics</label>
+      <label><input type="radio" name="cat" value="basics" /> Computer Basics</label>
+      <label><input type="radio" name="cat" value="web" /> Web Development</label>
+      <label><input type="radio" name="cat" value="programming" /> Programming</label>
+      <label><input type="radio" name="cat" value="datascience" /> Data Science</label>
+      <label><input type="radio" name="cat" value="ai" /> AI & ML</label>
+      <label><input type="radio" name="cat" value="cloud" /> Cloud & DevOps</label>
+      <label><input type="radio" name="cat" value="security" /> Cybersecurity</label>
+      <label><input type="radio" name="cat" value="mobile" /> Mobile</label>
+      <label><input type="radio" name="cat" value="cs" /> Computer Science</label>
+      <label><input type="radio" name="cat" value="db" /> Databases</label>
+      <label><input type="radio" name="cat" value="math" /> Math for IT</label>
+      <label><input type="radio" name="cat" value="design" /> UI/UX</label>
+      <label><input type="radio" name="cat" value="career" /> Career skills</label>
+      <input type="hidden" id="f-cat" value="all" />
+      <input type="hidden" id="f-level" value="all" />
+    </aside>
+    <div>
+      <div class="toolbar">
+        <strong id="count">0 courses</strong>
+        <input id="catalog-q" type="search" placeholder="Filter this list…" style="height:42px;border:1px solid var(--line);border-radius:999px;padding:0 14px;background:#fff;max-width:240px" />
+      </div>
+      <div class="grid-3" id="catalog"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="wrap footer-grid">
+      <div>
+        <a class="logo" href="index.html"><img src="assets/logo.svg" alt="" /><span class="logo-text">LMS Academy</span></a>
+        <p style="margin:12px 0;max-width:280px">IT from beginner to expert. Courses, study, paths, certificates.</p>
+      </div>
+      <div><h4>Learn</h4><a href="courses.html">Catalog</a><a href="study.html">Study Hub</a><a href="courses.html?level=Beginner">Beginner</a></div>
+      <div><h4>Build</h4><a href="certifications.html">Certificates</a><a href="paths.html">Career paths</a></div>
+      <div><h4>Academy</h4><a href="about.html">About</a><a href="login.html">Log in</a></div>
+      <div><h4>Search</h4><p style="font-size:14px">Find the next skill, not the next tab.</p></div>
+    </div>
+    <div class="wrap foot-note"><span>© 2026 LMS Academy</span><span>Learn. Master. Build.</span></div>
+  </footer>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

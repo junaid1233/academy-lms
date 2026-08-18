@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1180" />
+  <title>Teach — LMS Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/logo.svg" />
+</head>
+<body>
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="logo" href="index.html"><img src="assets/logo.svg" alt="" /><span class="logo-text">LMS <span>Academy</span></span></a>
+      <nav class="nav">
+        <a href="courses.html">Courses</a>
+        <a href="study.html">Study Hub</a>
+        <a href="teach.html">Teach</a>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn-ghost" href="register.html?role=student">Join as student</a>
+        <button class="menu-btn" id="menu-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-nav" id="mobile-nav"><a href="register.html?role=teacher">Join as teacher</a></div>
+
+  <div class="wrap page-head">
+    <div class="crumbs"><a href="index.html">Home</a> / Teach</div>
+    <h1>Enroll as a teacher</h1>
+    <p class="muted" style="max-width:640px">Students join to learn. You join to teach a topic, guide practice, and keep the campus original — no copied curricula.</p>
+  </div>
+
+  <section class="section" style="padding-top:8px">
+    <div class="wrap teach-grid">
+      <form class="auth-card" id="teach-form" style="width:100%">
+        <h2 class="serif" style="font-size:26px;color:var(--navy)">Teacher enrollment</h2>
+        <p class="muted" style="margin:8px 0 16px">Pick a course you can teach. Demo saves on this device.</p>
+        <div class="field">
+          <label for="teach-course">Course you will teach</label>
+          <select id="teach-course" style="width:100%;height:46px;border-radius:12px;border:1px solid var(--line);padding:0 12px;background:var(--paper)"></select>
+        </div>
+        <button class="btn btn-navy btn-lg" style="width:100%" type="submit">Enroll to teach</button>
+        <p style="margin-top:12px;font-size:14px">Also a learner? <a href="register.html?role=student" style="color:var(--teal-d);font-weight:700">Join as student</a></p>
+      </form>
+      <div>
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" alt="Instructor Daniel" style="width:100%;height:280px;object-fit:cover;border-radius:20px">
+        <p class="muted" style="margin-top:12px">Daniel Okonkwo — JavaScript teacher on LMS Academy.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"></footer>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.getElementById("teach-course").innerHTML = LMS.courses
+      .map((c) => `<option value="${c.id}">${c.title} (${c.level})</option>`)
+      .join("");
+  </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1180" />
+  <title>LMS Academy — Learn. Master. Build.</title>
+  <meta name="description" content="IT courses from beginner to expert, Khan-style study material, career paths, and project certificates — in one academy." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/logo.svg" />
+</head>
+<body class="home">
+  <div class="promo">This week: <strong>free CS foundations</strong> + mastery practice in Study Hub · Learn at your pace, prove it with projects</div>
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="logo" href="index.html">
+        <img src="assets/logo.svg" alt="" />
+        <span class="logo-text">LMS <span>Academy</span></span>
+      </a>
+      <nav class="nav">
+        <div class="drop">
+          <button type="button">Explore ▾</button>
+          <div class="mega">
+            <a href="courses.html?cat=basics"><div>Computer Basics<small>Windows, Office, internet</small></div></a>
+            <a href="courses.html?cat=web"><div>Web Development<small>HTML to Next.js</small></div></a>
+            <a href="courses.html?cat=programming"><div>Programming<small>Python, JS, Java</small></div></a>
+            <a href="courses.html?cat=datascience"><div>Data Science<small>SQL to analysis</small></div></a>
+            <a href="courses.html?cat=ai"><div>AI & Machine Learning<small>ML to PyTorch</small></div></a>
+            <a href="courses.html?cat=cloud"><div>Cloud & DevOps<small>AWS, Docker, K8s</small></div></a>
+            <a href="courses.html?cat=security"><div>Cybersecurity<small>Defense and labs</small></div></a>
+            <a href="courses.html?cat=cs"><div>Computer Science<small>DSA & systems</small></div></a>
+            <a href="courses.html?cat=math"><div>Math for IT<small>Algebra, stats, linear algebra</small></div></a>
+          </div>
+        </div>
+        <a href="courses.html">Courses</a>
+        <a href="study.html">Study Hub</a>
+        <a href="teach.html">Teach</a>
+        <a href="paths.html">Career Paths</a>
+        <a href="certifications.html">Certificates</a>
+      </nav>
+      <form class="search" data-search-form>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+        <input type="search" placeholder="Search IT courses, topics, paths…" />
+      </form>
+      <div class="header-actions">
+        <a class="btn btn-ghost" href="login.html">Log in</a>
+        <a class="btn btn-coral" href="register.html">Join free</a>
+        <button class="menu-btn" id="menu-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="courses.html">Courses</a>
+    <a href="study.html">Study Hub</a>
+    <a href="paths.html">Career Paths</a>
+    <a href="certifications.html">Certificates</a>
+    <a href="about.html">About</a>
+    <a href="login.html">Log in</a>
+  </div>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="kicker">IT + study · beginner → expert</div>
+        <h1>One academy for <em>courses</em>, mastery, and careers.</h1>
+        <p class="lead">Students enroll to learn. Teachers enroll to teach. Study Hub is original mastery practice — written here, not copied from another academy.</p>
+        <form class="hero-search" data-search-form>
+          <div class="search"><input type="search" placeholder="Try Python, React, SQL, AWS…" /></div>
+          <button class="btn btn-navy btn-lg" type="submit">Search</button>
+        </form>
+        <div class="chips">
+          <a class="chip is-on" href="#featured" data-level="Beginner">Beginner</a>
+          <a class="chip" href="#featured" data-level="Intermediate">Intermediate</a>
+          <a class="chip" href="#featured" data-level="Advanced">Advanced</a>
+          <a class="chip" href="#featured" data-level="Expert">Expert</a>
+          <a class="chip" href="study.html">Free study material</a>
+        </div>
+      </div>
+      <div class="hero-shot">
+        <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80" alt="Students and a mentor working on laptops in class">
+        <div class="hero-chip-photo">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" alt="Daniel Okonkwo">
+          <div><b>Daniel Okonkwo</b><span>Teaches JavaScript on campus</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap dual-cta">
+      <article>
+        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80" alt="Students studying together">
+        <div class="copy">
+          <h3>Students</h3>
+          <p>Enroll in a levelled course, then practice in Study Hub until you can teach it back.</p>
+          <a class="btn btn-coral" href="register.html?role=student" style="margin-top:12px;width:fit-content">Join as student</a>
+        </div>
+      </article>
+      <article>
+        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=900&q=80" alt="Male instructor">
+        <div class="copy">
+          <h3>Teachers</h3>
+          <p>Enroll to teach a topic, publish a course outline, and guide learners on this campus.</p>
+          <a class="btn btn-white" href="teach.html" style="margin-top:12px;width:fit-content">Enroll as teacher</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-h">
+        <div>
+          <h2>Learn in order, not in chaos</h2>
+          <p>Every course is tagged from first steps to specialist work — so you never skip the foundation.</p>
+        </div>
+        <a class="btn btn-ghost" href="courses.html">Browse by level</a>
+      </div>
+      <div class="levels">
+        <a class="level-card l-beg is-on" href="#featured" data-level="Beginner">
+          <div class="step">01</div>
+          <h3>Beginner</h3>
+          <p>Computer basics, MS Office, email, typing. True startup — no coding yet.</p>
+        </a>
+        <a class="level-card l-int" href="#featured" data-level="Intermediate">
+          <div class="step">02</div>
+          <h3>Intermediate</h3>
+          <p>HTML, Python, JavaScript, SQL, Git. First real IT skills.</p>
+        </a>
+        <a class="level-card l-adv" href="#featured" data-level="Advanced">
+          <div class="step">03</div>
+          <h3>Advanced</h3>
+          <p>React, APIs, data, cloud, security, DSA. Job-track depth.</p>
+        </a>
+        <a class="level-card l-exp" href="#featured" data-level="Expert">
+          <div class="step">04</div>
+          <h3>Expert</h3>
+          <p>Deep learning, system design, interview-grade architecture.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="featured" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-h">
+        <div>
+          <h2>Courses for this level</h2>
+          <p id="home-level-label">Beginner courses</p>
+        </div>
+        <a class="btn btn-navy" id="home-catalog-link" href="courses.html?level=Beginner">All Beginner in catalog</a>
+      </div>
+      <div class="grid-4" id="home-courses"></div>
+    </div>
+  </section>
+
+  <section class="section" style="background:#fff;border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="section-h">
+        <div>
+          <h2>Study Hub</h2>
+          <p>Short units, practice, and mastery — study material you can actually finish.</p>
+        </div>
+        <a class="btn btn-teal" href="study.html">Open Study Hub</a>
+      </div>
+      <div class="grid-2" id="home-study"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-h">
+        <div>
+          <h2>Career programs</h2>
+          <p>Longer, outcome-led tracks for people who want a role — not just a playlist.</p>
+        </div>
+        <a class="btn btn-ghost" href="paths.html">See all paths</a>
+      </div>
+      <div class="grid-3">
+        <article class="prog-card">
+          <span class="badge badge-gold">24 weeks</span>
+          <h3>PG Program in Full-Stack Development</h3>
+          <p class="muted">Mentored build: frontend, APIs, deploy. Portfolio that survives a hiring screen.</p>
+        </article>
+        <article class="prog-card">
+          <span class="badge badge-gold">20 weeks</span>
+          <h3>Professional Certificate in Data Science</h3>
+          <p class="muted">SQL, Python, stats, a capstone, and interview drills for analyst roles.</p>
+        </article>
+        <article class="prog-card">
+          <span class="badge badge-gold">16 weeks</span>
+          <h3>Cloud & DevOps Bootcamp</h3>
+          <p class="muted">Linux to pipelines. Ship infrastructure, not slides.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-h">
+        <div>
+          <h2>Teachers on campus</h2>
+          <p>Real instructors for real courses — web, JavaScript, Linux, and Git.</p>
+        </div>
+        <a class="btn btn-ghost" href="teach.html">Enroll as teacher</a>
+      </div>
+      <div class="people">
+        <article class="person">
+          <div class="person-pic">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&crop=faces&w=700&h=700&q=80" alt="Daniel Okonkwo">
+          </div>
+          <div>
+            <span class="badge badge-navy">Instructor</span>
+            <b>Daniel Okonkwo</b>
+            <p class="muted">JavaScript &amp; algorithms</p>
+            <p>Guides learners from first script to interview-ready DSA — clear, slow, and project-based.</p>
+            <div class="quote-stars">★★★★★ <em>4.9 · 2 courses</em></div>
+          </div>
+        </article>
+        <article class="person">
+          <div class="person-pic">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&crop=faces&w=700&h=700&q=80" alt="Omar Farooq">
+          </div>
+          <div>
+            <span class="badge badge-navy">Instructor</span>
+            <b>Omar Farooq</b>
+            <p class="muted">Linux, Git &amp; computer basics</p>
+            <p>Starts beginners on Windows and Office, then the terminal and Git teams actually use.</p>
+            <div class="quote-stars">★★★★★ <em>4.8 · 3 courses</em></div>
+          </div>
+        </article>
+        <article class="person">
+          <div class="person-pic">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&crop=faces&w=700&h=700&q=80" alt="Ayesha Malik">
+          </div>
+          <div>
+            <span class="badge badge-navy">Instructor</span>
+            <b>Ayesha Malik</b>
+            <p class="muted">HTML, CSS &amp; responsive web</p>
+            <p>Builds the first real pages with students — layout, accessibility, and a clean portfolio.</p>
+            <div class="quote-stars">★★★★★ <em>4.8 · 2 courses</em></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-h">
+        <div>
+          <h2>Learners on the path</h2>
+          <p>What students say after they pick a level and stay with it.</p>
+        </div>
+      </div>
+      <div class="grid-3">
+        <blockquote class="quote">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80" alt="Sara K.">
+          <b>Sara K.</b>
+          <span>Career switcher</span>
+          <p>“Study Hub felt like a patient tutor. Courses told me what to take next.”</p>
+          <div class="quote-stars" aria-label="5 out of 5 stars">★★★★★ <em>5.0</em></div>
+        </blockquote>
+        <blockquote class="quote">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80" alt="Bilal A.">
+          <b>Bilal A.</b>
+          <span>CS student</span>
+          <p>“Beginner to expert filters saved me. I stopped jumping into advanced ML too early.”</p>
+          <div class="quote-stars" aria-label="5 out of 5 stars">★★★★★ <em>5.0</em></div>
+        </blockquote>
+        <blockquote class="quote">
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80" alt="Mei L.">
+          <b>Mei L.</b>
+          <span>Junior developer</span>
+          <p>“Certificates here mean projects. That is what I needed.”</p>
+          <div class="quote-stars" aria-label="5 out of 5 stars">★★★★★ <em>5.0</em></div>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <h2>Built like several academies. Named as one.</h2>
+      <p style="max-width:560px;margin-top:10px;color:#c9d2dc">Catalog + search. Mastery study. Project certificates. Career paths. IT from first click to first job.</p>
+      <div class="stats">
+        <div class="stat"><b>4</b><span>startup beginner courses</span></div>
+        <div class="stat"><b>6</b><span>intermediate IT courses</span></div>
+        <div class="stat"><b>8</b><span>career paths</span></div>
+        <div class="stat"><b>10</b><span>project certificates</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"></footer>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1180" />
+  <title>Join — LMS Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/logo.svg" />
+</head>
+<body>
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="logo" href="index.html"><img src="assets/logo.svg" alt="" /><span class="logo-text">LMS <span>Academy</span></span></a>
+      <nav class="nav">
+        <a href="courses.html">Courses</a>
+        <a href="study.html">Study Hub</a>
+        <a href="paths.html">Career Paths</a>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn-ghost" href="login.html">Log in</a>
+        <button class="menu-btn" id="menu-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="login.html">Log in</a><a href="index.html">Home</a>
+  </div>
+  <div class="auth">
+    <form class="auth-card" id="auth-form">
+      <h1 class="serif" style="font-size:32px;color:var(--navy)">Join LMS Academy</h1>
+      <p class="muted" style="margin:8px 0 18px">Free to start. Demo account stays on this device.</p>
+      <div class="role-pick">
+        <label><input type="radio" name="role" value="student" checked /> Student — I want to learn</label>
+        <label><input type="radio" name="role" value="teacher" /> Teacher — I want to teach</label>
+      </div>
+      <div class="field"><label for="name">Name</label><input id="name" required placeholder="Your name" /></div>
+      <div class="field"><label for="email">Email</label><input id="email" type="email" required placeholder="you@email.com" /></div>
+      <div class="field"><label for="password">Password</label><input id="password" type="password" required minlength="4" placeholder="Create a password" /></div>
+      <button class="btn btn-coral btn-lg" style="width:100%" type="submit">Create account</button>
+      <p style="margin-top:14px;font-size:14px">Already learning? <a href="login.html" style="color:var(--teal-d);font-weight:700">Log in</a></p>
+    </form>
+  </div>
+  <footer class="footer">
+    <div class="wrap foot-note"><span>© 2026 LMS Academy</span><span>Learn. Master. Build.</span></div>
+  </footer>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
