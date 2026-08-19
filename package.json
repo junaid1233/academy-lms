@@ -1,0 +1,16 @@
+{
+  "name": "academy-lms",
+  "private": true,
+  "scripts": {
+    "dev": "vite --open --port 3000",
+    "start": "vite --open --port 3000",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}

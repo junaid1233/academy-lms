@@ -31,21 +31,37 @@
   <div class="auth">
     <form class="auth-card" id="auth-form">
       <h1 class="serif" style="font-size:32px;color:var(--navy)">Join LMS Academy</h1>
-      <p class="muted" style="margin:8px 0 18px">Free to start. Demo account stays on this device.</p>
+      <p class="muted" style="margin:8px 0 18px">Create your campus profile. A complete email opens the next step.</p>
       <div class="role-pick">
-        <label><input type="radio" name="role" value="student" checked /> Student — I want to learn</label>
-        <label><input type="radio" name="role" value="teacher" /> Teacher — I want to teach</label>
+        <label><input type="radio" name="role" value="student" checked /> Student</label>
+        <label><input type="radio" name="role" value="teacher" /> Teacher</label>
       </div>
-      <div class="field"><label for="name">Name</label><input id="name" required placeholder="Your name" /></div>
-      <div class="field"><label for="email">Email</label><input id="email" type="email" required placeholder="you@email.com" /></div>
-      <div class="field"><label for="password">Password</label><input id="password" type="password" required minlength="4" placeholder="Create a password" /></div>
-      <button class="btn btn-coral btn-lg" style="width:100%" type="submit">Create account</button>
+      <div class="auth-step" data-step="1">
+        <div class="field"><label for="name">Name</label><input id="name" required placeholder="Your name" /></div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" placeholder="you@email.com" />
+          <p class="field-hint" id="email-hint">That address is still half-written. Add @ and a domain — then the next door unlocks.</p>
+        </div>
+        <button class="btn btn-coral btn-lg" style="width:100%" type="button" id="auth-next" disabled>Continue</button>
+      </div>
+      <div class="auth-step" data-step="2" hidden>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="new-password" placeholder="A1b! plus 8 characters" />
+          <p class="field-hint" id="pw-hint">This lock needs lowercase, UPPERCASE, a number, and a symbol — eight characters at least.</p>
+        </div>
+        <p class="auth-error" id="auth-error" hidden></p>
+        <button class="btn btn-coral btn-lg" style="width:100%" type="submit" id="auth-submit" disabled>Create account</button>
+        <button class="btn btn-ghost" style="width:100%;margin-top:8px" type="button" id="auth-back">Back to email</button>
+      </div>
       <p style="margin-top:14px;font-size:14px">Already learning? <a href="login.html" style="color:var(--teal-d);font-weight:700">Log in</a></p>
     </form>
   </div>
   <footer class="footer">
     <div class="wrap foot-note"><span>© 2026 LMS Academy</span><span>Learn. Master. Build.</span></div>
   </footer>
+  <script type="module" src="js/supabase-client.js"></script>
   <script src="js/data.js"></script>
   <script src="js/main.js"></script>
 </body>

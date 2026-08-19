@@ -42,22 +42,27 @@
       <span class="badge badge-navy" id="c-level">Level</span>
       <h1 id="c-title" style="margin-top:10px">Course</h1>
       <p id="c-meta" class="muted"></p>
-      <p>Instructor <strong id="c-inst"></strong></p>
+      <p>Instructor <a id="c-inst" href="instructor.html"></a></p>
     </div>
     <div class="detail">
       <div>
-        <div class="player" id="c-cover"><span>▶ Lesson preview</span></div>
+        <div class="player" id="c-cover"><span>▶ Open a lecture to start</span></div>
+        <div id="c-lesson" class="lesson-panel" hidden></div>
         <h2 class="serif" style="font-size:28px;color:var(--navy);margin-bottom:10px">What you’ll learn</h2>
         <p id="c-desc" style="margin-bottom:14px"></p>
         <ul id="c-outcomes" style="display:grid;gap:8px;font-size:15px"></ul>
-        <h2 class="serif" style="font-size:28px;color:var(--navy);margin:28px 0 12px">Curriculum</h2>
+        <h2 class="serif" style="font-size:28px;color:var(--navy);margin:28px 0 8px">Curriculum</h2>
+        <p class="muted" id="c-curric-meta" style="margin-bottom:12px"></p>
         <div class="curric" id="c-curric"></div>
+        <div id="c-instructor"></div>
       </div>
       <aside class="buy">
         <div style="font-size:28px;font-weight:800;color:var(--navy)" id="c-price">Free</div>
         <p class="muted" style="margin:6px 0 14px">Includes lectures, exercises, and dashboard progress.</p>
         <a class="btn btn-coral btn-lg" id="enroll-student" href="register.html?role=student" style="width:100%">Enroll as student</a>
-        <a class="btn btn-navy" id="enroll-teacher" href="teach.html" style="width:100%;margin-top:8px">Enroll as teacher</a>
+        <a class="btn btn-teal btn-lg" id="start-course" href="#" style="width:100%;display:none">Start</a>
+        <a class="btn btn-ghost" id="drop-course" href="#" style="width:100%;margin-top:8px;display:none">Drop from desk</a>
+        <a class="btn btn-navy" id="enroll-teacher" href="teach.html" style="width:100%;margin-top:8px">Teach this course (free)</a>
         <a class="btn btn-ghost" href="study.html" style="width:100%;margin-top:8px">Practice in Study Hub</a>
         <ul style="margin-top:16px;font-size:14px;color:var(--muted);display:grid;gap:6px">
           <li id="c-hours">Hours</li>
@@ -79,6 +84,7 @@
     </div>
     <div class="wrap foot-note"><span>© 2026 LMS Academy</span><span>Learn. Master. Build.</span></div>
   </footer>
+  <script type="module" src="js/supabase-client.js"></script>
   <script src="js/data.js"></script>
   <script src="js/main.js"></script>
 </body>

@@ -488,7 +488,7 @@ window.LMS = {
     {
       id: "career-tech",
       title: "Tech Career: Portfolio, Interviews & Offers",
-      instructor: "Hana Kim",
+      instructor: "Prof. Martin Cole",
       category: "career",
       level: "Advanced",
       rating: 4.8,
@@ -500,6 +500,326 @@ window.LMS = {
       badge: "Career",
       desc: "Resume, GitHub story, STAR interviews, and how to talk about projects without fluff.",
       outcomes: ["Portfolio narrative", "Resume that scans", "Interview stories", "Offer basics"]
+    },
+    {
+      id: "excel-dashboards",
+      title: "Excel Dashboards for School & Office",
+      instructor: "Farah Siddiqui",
+      category: "basics",
+      level: "Beginner",
+      rating: 4.8,
+      reviews: 5400,
+      hours: 9,
+      lectures: 44,
+      students: 38000,
+      price: "Free",
+      badge: "New",
+      desc: "Charts, tables, and a clean one-page dashboard. No coding — just Excel people actually open at work.",
+      outcomes: ["Clean data tables", "Charts that read clearly", "A one-page dashboard", "Print and share a report"]
+    },
+    {
+      id: "chrome-pc-habits",
+      title: "Chrome, Shortcuts & Daily PC Habits",
+      instructor: "Omar Farooq",
+      category: "basics",
+      level: "Beginner",
+      rating: 4.7,
+      reviews: 2100,
+      hours: 5,
+      lectures: 24,
+      students: 19000,
+      price: "Free",
+      badge: "",
+      desc: "Tabs, downloads, bookmarks, keyboard shortcuts, and a desktop that stays tidy.",
+      outcomes: ["Browser without chaos", "Useful shortcuts", "Downloads you can find", "A calmer desktop"]
+    },
+    {
+      id: "meetings-zoom",
+      title: "Zoom, Meet & Online Class Etiquette",
+      instructor: "Farah Siddiqui",
+      category: "basics",
+      level: "Beginner",
+      rating: 4.6,
+      reviews: 1800,
+      hours: 4,
+      lectures: 20,
+      students: 16000,
+      price: "Free",
+      badge: "Startup",
+      desc: "Join a call, share a screen, mute at the right time, and look ready for class or a first job interview.",
+      outcomes: ["Join and host a call", "Share screen cleanly", "Camera and audio basics", "Simple meeting manners"]
+    },
+    {
+      id: "vscode-first",
+      title: "VS Code: Your First Coding Setup",
+      instructor: "Daniel Okonkwo",
+      category: "programming",
+      level: "Intermediate",
+      rating: 4.8,
+      reviews: 7200,
+      hours: 6,
+      lectures: 32,
+      students: 54000,
+      price: "Free",
+      badge: "New",
+      desc: "Install the editor, open a folder, run a file, and debug without fear. The workshop before every language course.",
+      outcomes: ["A working VS Code setup", "Extensions that help", "Run and debug a file", "Git inside the editor"]
+    },
+    {
+      id: "bootstrap-layouts",
+      title: "Bootstrap Layouts for Real Pages",
+      instructor: "Ayesha Malik",
+      category: "web",
+      level: "Intermediate",
+      rating: 4.7,
+      reviews: 6100,
+      hours: 10,
+      lectures: 48,
+      students: 41000,
+      price: "Free",
+      badge: "",
+      desc: "Grid, navbar, cards, and forms. Ship a landing page that looks finished on phone and desktop.",
+      outcomes: ["Bootstrap grid fluency", "Navbar and hero", "Forms that validate", "A live landing page"]
+    },
+    {
+      id: "python-scripts",
+      title: "Python Scripts for Everyday Tasks",
+      instructor: "Priya Raman",
+      category: "programming",
+      level: "Intermediate",
+      rating: 4.8,
+      reviews: 8900,
+      hours: 12,
+      lectures: 56,
+      students: 67000,
+      price: "Free",
+      badge: "Bestseller",
+      desc: "Rename files, clean a CSV, hit a simple API. Python as a tool, not a textbook.",
+      outcomes: ["Scripts you will reuse", "Files and folders in Python", "CSV cleanup", "A tiny automation project"]
+    },
+    {
+      id: "typescript-js",
+      title: "TypeScript for JavaScript Developers",
+      instructor: "Noah Berg",
+      category: "programming",
+      level: "Advanced",
+      rating: 4.8,
+      reviews: 11200,
+      hours: 14,
+      lectures: 68,
+      students: 72000,
+      price: "Included",
+      badge: "New",
+      desc: "Types, interfaces, and safer React/Node code. The language teams expect after JavaScript.",
+      outcomes: ["Core TypeScript types", "Interfaces and generics", "Typed API calls", "A migrated mini app"]
+    },
+    {
+      id: "mongodb-node",
+      title: "MongoDB with Node APIs",
+      instructor: "Sofia Alvarez",
+      category: "db",
+      level: "Advanced",
+      rating: 4.7,
+      reviews: 5400,
+      hours: 11,
+      lectures: 52,
+      students: 39000,
+      price: "Included",
+      badge: "",
+      desc: "Collections, queries, indexes, and a CRUD API. Data that survives a refresh.",
+      outcomes: ["Document modeling", "CRUD with Mongoose", "Indexes that help", "An API with real data"]
+    },
+    {
+      id: "pandas-stories",
+      title: "Pandas, Charts & Data Stories",
+      instructor: "Priya Raman",
+      category: "datascience",
+      level: "Advanced",
+      rating: 4.8,
+      reviews: 7600,
+      hours: 13,
+      lectures: 60,
+      students: 51000,
+      price: "Included",
+      badge: "Career path",
+      desc: "Clean a messy table, plot what matters, and write a one-page finding. Analyst work, not notebook tourism.",
+      outcomes: ["Clean with Pandas", "Charts that explain", "A written finding", "A shareable notebook"]
+    },
+    {
+      id: "llm-apps",
+      title: "LLM Apps: Prompts, RAG & Guardrails",
+      instructor: "Dr. Leila Hassan",
+      category: "ai",
+      level: "Expert",
+      rating: 4.7,
+      reviews: 3200,
+      hours: 16,
+      lectures: 64,
+      students: 24000,
+      price: "Included",
+      badge: "New",
+      desc: "Prompt patterns, retrieval, and a small app that answers from your own notes — with limits, not hype.",
+      outcomes: ["Reliable prompt patterns", "Simple RAG pipeline", "Safety checks", "A documented demo app"]
+    },
+    {
+      id: "terraform-aws",
+      title: "Terraform on AWS: Infra as Code",
+      instructor: "James Whitaker",
+      category: "cloud",
+      level: "Expert",
+      rating: 4.8,
+      reviews: 4100,
+      hours: 18,
+      lectures: 72,
+      students: 28000,
+      price: "Included",
+      badge: "",
+      desc: "Providers, state, modules, and a repeatable VPC. Cloud you can rebuild, not click together once.",
+      outcomes: ["Terraform workflow", "Reusable modules", "Remote state", "A rebuildable AWS lab"]
+    },
+    {
+      id: "k8s-production",
+      title: "Kubernetes for Production Teams",
+      instructor: "James Whitaker",
+      category: "cloud",
+      level: "Expert",
+      rating: 4.6,
+      reviews: 2900,
+      hours: 20,
+      lectures: 80,
+      students: 21000,
+      price: "Included",
+      badge: "",
+      desc: "Deployments, services, probes, and rollouts. The cluster after the hello-world YAML.",
+      outcomes: ["Workloads that stay up", "Health probes", "Config and secrets", "A safe rollout plan"]
+    },
+    {
+      id: "android-kotlin",
+      title: "Android Apps with Kotlin",
+      instructor: "Kenji Sato",
+      category: "mobile",
+      level: "Advanced",
+      rating: 4.7,
+      reviews: 4800,
+      hours: 22,
+      lectures: 90,
+      students: 34000,
+      price: "Included",
+      badge: "New",
+      desc: "Screens, lists, and a small app you can install. Mobile after web — not a toy clicker.",
+      outcomes: ["Kotlin basics for apps", "Layouts and navigation", "Lists from data", "An installable APK"]
+    },
+    {
+      id: "figma-to-html",
+      title: "Figma to HTML: Design Handoff",
+      instructor: "Hana Kim",
+      category: "design",
+      level: "Intermediate",
+      rating: 4.8,
+      reviews: 3600,
+      hours: 8,
+      lectures: 38,
+      students: 27000,
+      price: "Free",
+      badge: "",
+      desc: "Read a file, measure spacing, and build the page. Designers and developers finally speaking the same layout.",
+      outcomes: ["Read a Figma file", "Spacing and type scale", "Assets export", "A matching HTML page"]
+    },
+    {
+      id: "mysql-queries",
+      title: "MySQL: Tables, Joins & Reports",
+      instructor: "Elena Petrova",
+      category: "db",
+      level: "Intermediate",
+      rating: 4.7,
+      reviews: 5100,
+      hours: 11,
+      lectures: 50,
+      students: 43000,
+      price: "Free",
+      badge: "New",
+      desc: "Create tables, join them, and answer a business question with a query — not a screenshot of Excel.",
+      outcomes: ["Schema that makes sense", "SELECT with joins", "Group and filter", "A short data report"]
+    },
+    {
+      id: "rust-systems",
+      title: "Rust for Systems Thinking",
+      instructor: "Rahul Mehta",
+      category: "cs",
+      level: "Expert",
+      rating: 4.6,
+      reviews: 1800,
+      hours: 24,
+      lectures: 96,
+      students: 12000,
+      price: "Included",
+      badge: "",
+      desc: "Ownership, memory, and a CLI tool that does not crash on bad input. Expert CS with a language that bites back.",
+      outcomes: ["Ownership and borrowing", "Error handling", "A CLI project", "Tests you trust"]
+    },
+    {
+      id: "staff-eng-path",
+      title: "Staff Engineer: Design, Review & Mentorship",
+      instructor: "Prof. Martin Cole",
+      category: "career",
+      level: "Expert",
+      rating: 4.8,
+      reviews: 1400,
+      hours: 12,
+      lectures: 42,
+      students: 9000,
+      price: "Included",
+      badge: "Career",
+      desc: "Write a design doc, review a PR with care, and grow a junior without taking the keyboard.",
+      outcomes: ["A clear design doc", "Review that teaches", "Scope a project", "Mentor habits"]
+    },
+    {
+      id: "photo-edit-basics",
+      title: "Photos, Screenshots & Simple Editing",
+      instructor: "Hana Kim",
+      category: "basics",
+      level: "Beginner",
+      rating: 4.5,
+      reviews: 1600,
+      hours: 5,
+      lectures: 22,
+      students: 14000,
+      price: "Free",
+      badge: "",
+      desc: "Crop, resize, and annotate a screenshot for class, a ticket, or a slide. Visual basics before design courses.",
+      outcomes: ["Crop and resize", "Annotate a screenshot", "Save the right format", "A clean image for slides"]
+    },
+    {
+      id: "jwt-auth-apis",
+      title: "Auth for APIs: Sessions, JWT & Roles",
+      instructor: "Sofia Alvarez",
+      category: "web",
+      level: "Advanced",
+      rating: 4.7,
+      reviews: 3300,
+      hours: 10,
+      lectures: 46,
+      students: 22000,
+      price: "Included",
+      badge: "",
+      desc: "Login that is not a toy. Tokens, refresh, and who can hit which route.",
+      outcomes: ["Session vs token", "JWT flow", "Role checks", "A locked-down API"]
+    },
+    {
+      id: "network-plus-lab",
+      title: "Networking Lab: IP, DNS & Packets",
+      instructor: "Nadia Rahman",
+      category: "security",
+      level: "Beginner",
+      rating: 4.6,
+      reviews: 2700,
+      hours: 9,
+      lectures: 40,
+      students: 18000,
+      price: "Free",
+      badge: "New",
+      desc: "How a request finds a server. IP, DNS, ports, and a lab you can repeat — the missing beginner layer before cloud.",
+      outcomes: ["IP and subnets in plain talk", "DNS lookup practice", "Ports and protocols", "A small packet lab"]
     }
   ],
 
@@ -753,22 +1073,214 @@ window.LMS = {
 
   instructors: [
     {
-      name: "Daniel Okonkwo",
-      role: "JavaScript & DSA",
-      courses: 2,
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80"
+      id: "farah-siddiqui",
+      name: "Farah Siddiqui",
+      role: "Computer basics & MS Office",
+      location: "Karachi, Pakistan",
+      years: 9,
+      rating: 4.8,
+      photo: "https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Farah spent nine years teaching office software in Karachi colleges before joining LMS Academy. She starts people on a real PC — power on, files, Word, Excel, email — not a coding bootcamp on day one.",
+        "Her classrooms are slow on purpose: every shortcut is shown twice, then practiced on a messy desktop students actually own. Thousands of first-job learners came through her MS Office and Excel dashboard courses.",
+        "She still runs weekend labs for people who have never attached a file to email. That patience is why beginners stay, then move to Omar’s Git and Ayesha’s first web page."
+      ]
     },
     {
+      id: "omar-farooq",
       name: "Omar Farooq",
-      role: "Linux, Git & Cloud basics",
-      courses: 3,
-      photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80"
+      role: "Linux, Git & computer basics",
+      location: "Lahore, Pakistan",
+      years: 11,
+      rating: 4.8,
+      photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Omar was a sysadmin who taught night classes after on-call. He now teaches Windows habits, the terminal, and Git the way shipping teams actually use them — not a museum of commands.",
+        "Learners meet him after Farah’s office track: Chrome, files, then Linux permissions and a first real commit. His labs break on purpose so students learn to read an error instead of restarting the machine.",
+        "He still keeps a small server at home for demos. If a lesson cannot be rebuilt from notes, it does not ship on this campus."
+      ]
     },
     {
+      id: "hana-kim",
+      name: "Hana Kim",
+      role: "UI/UX, Figma & visual basics",
+      location: "Seoul, South Korea",
+      years: 8,
+      rating: 4.7,
+      photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Hana is a product designer who still writes HTML. She coaches screenshots, Figma handoff, and the spacing hiring managers notice in a portfolio — not a slide deck of design jargon.",
+        "Her courses sit between beginner computer skills and Ayesha’s web layouts: crop a photo, annotate a ticket, then match a Figma file in the browser.",
+        "She reviews student work like a studio lead: one clear note, one next step. Designers and developers in her rooms finally share a layout language."
+      ]
+    },
+    {
+      id: "ayesha-malik",
       name: "Ayesha Malik",
-      role: "Web & CSS",
-      courses: 2,
-      photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80"
+      role: "HTML, CSS & responsive web",
+      location: "Islamabad, Pakistan",
+      years: 7,
+      rating: 4.8,
+      photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Ayesha built marketing sites for local businesses, then taught the same layouts in class. Her pages are accessible, responsive, and meant to ship — not a CodePen that dies on a phone.",
+        "HTML, CSS, Flexbox, Grid, and Bootstrap: three courses, one story. Students leave with a personal site they can defend in an interview.",
+        "She pairs with Hana on design handoff and with Daniel when JavaScript has to land on a real DOM. The campus web path starts at her desk."
+      ]
+    },
+    {
+      id: "daniel-okonkwo",
+      name: "Daniel Okonkwo",
+      role: "JavaScript, VS Code & DSA",
+      location: "Lagos, Nigeria",
+      years: 10,
+      rating: 4.9,
+      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Daniel started as a self-taught front-end engineer in Lagos. He is known for slow, project-based JavaScript — from first script in VS Code to interview DSA you can talk through out loud.",
+        "His three courses form a ladder: editor setup, interactive pages, then algorithms. He will not skip the boring loop that makes the clever trick possible.",
+        "Alumni send him offer letters. He asks for the GitHub instead. If the repo is messy, the next cohort hears why — kindly, and in public notes."
+      ]
+    },
+    {
+      id: "priya-raman",
+      name: "Priya Raman",
+      role: "Python & data analysis",
+      location: "Bengaluru, India",
+      years: 12,
+      rating: 4.8,
+      photo: "https://images.unsplash.com/photo-1607746882042-311afd84d9ab?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Priya was an analyst who got tired of notebooks that never left the laptop. She teaches Python, Pandas, and the one-page finding a manager will actually read.",
+        "Four courses, one habit: clean the CSV, chart what matters, write the sentence. No kaggle tourism. No mystery libraries on day one.",
+        "She still consults one afternoon a week so the datasets in class match the mess of a real quarter close."
+      ]
+    },
+    {
+      id: "elena-petrova",
+      name: "Elena Petrova",
+      role: "SQL, MySQL & statistics",
+      location: "Sofia, Bulgaria",
+      years: 14,
+      rating: 4.7,
+      photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Elena is a database engineer who teaches joins with tables you can draw on paper. Statistics stay honest: sampling, inference, and a query you can explain to a non-engineer.",
+        "SQL fundamentals, MySQL reports, and stats for IT — three courses that stop people from screenshotting Excel into a slide and calling it analysis.",
+        "She trained analysts in Sofia before LMS Academy. Her rule: if you cannot name the grain of the table, you do not JOIN yet."
+      ]
+    },
+    {
+      id: "noah-berg",
+      name: "Noah Berg",
+      role: "React, Next.js & TypeScript",
+      location: "Austin, USA",
+      years: 9,
+      rating: 4.8,
+      photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Noah is a full-stack contractor who still ships client dashboards. He teaches React, Next.js, and TypeScript the way production teams write them — hooks, routing, types, then deploy.",
+        "Students come from Daniel’s JavaScript. They leave with an app that survives a refresh and a type error that means something.",
+        "He records lessons after real standups, so the bugs in class are the bugs from Tuesday, not a tutorial from 2018."
+      ]
+    },
+    {
+      id: "sofia-alvarez",
+      name: "Sofia Alvarez",
+      role: "Node, APIs & MongoDB",
+      location: "Mexico City, Mexico",
+      years: 11,
+      rating: 4.7,
+      photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Sofia ran on-call for a payments API. Her Node, Express, Mongo, Docker, and auth courses come from nights spent keeping routes up — not a hello-world server that never sees traffic.",
+        "Four courses: APIs, Mongo, Docker pipelines, and JWT that is not a toy. She pairs with James when the work moves to Kubernetes on AWS.",
+        "She will fail a lab that has no health check. Students remember that more than any slide."
+      ]
+    },
+    {
+      id: "rahul-mehta",
+      name: "Rahul Mehta",
+      role: "Java, DSA, Rust & system design",
+      location: "Pune, India",
+      years: 13,
+      rating: 4.6,
+      photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Rahul interviewed engineers at a large product company and got tired of clever answers with no diagram. He drills Java, complexity, Rust, and system design until a whiteboard has a real box-and-arrow story.",
+        "Three expert-leaning courses. He will stop a student who jumps to microservices before they can explain a lock.",
+        "Office hours are a queue. Bring a failed test, not a motivational question."
+      ]
+    },
+    {
+      id: "dr-leila-hassan",
+      name: "Dr. Leila Hassan",
+      role: "Machine learning & LLM apps",
+      location: "Amman, Jordan",
+      years: 15,
+      rating: 4.7,
+      photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Leila holds a PhD in applied machine learning. She teaches models and LLM apps with guardrails — notebooks that become demos, not slide decks of accuracy numbers nobody can reproduce.",
+        "Theory to practice, PyTorch, then a small RAG app that answers from your own notes. Hype is a failing grade.",
+        "She publishes lab errata the same week a library breaks. That is the job, she says, not a trailer for a course."
+      ]
+    },
+    {
+      id: "james-whitaker",
+      name: "James Whitaker",
+      role: "AWS, Terraform & Kubernetes",
+      location: "Manchester, UK",
+      years: 16,
+      rating: 4.8,
+      photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "James is a cloud architect. Every lab is rebuildable: VPC, IAM, Terraform state, then a Kubernetes rollout — no mystery clicks in a console you cannot screenshot twice.",
+        "Three courses from practitioner to production cluster. He learned this the expensive way, on teams that could not recreate last Friday’s outage.",
+        "Bring a diagram to class. If you cannot draw the packet path, you do not get the YAML yet."
+      ]
+    },
+    {
+      id: "nadia-rahman",
+      name: "Nadia Rahman",
+      role: "Cybersecurity & networking",
+      location: "Dhaka, Bangladesh",
+      years: 10,
+      rating: 4.7,
+      photo: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Nadia was a blue-team analyst. She teaches packets, DNS, and defensive labs before anyone talks about “hacking a site.” Curiosity without a lab is just a blog post.",
+        "Networking for beginners, cybersecurity foundations, and ethical hacking with a written scope. Three courses, one ethic: you break only what you own.",
+        "She still reads incident reports on Sunday. Monday’s lesson changes if the industry did."
+      ]
+    },
+    {
+      id: "kenji-sato",
+      name: "Kenji Sato",
+      role: "Flutter, Android & Kotlin",
+      location: "Osaka, Japan",
+      years: 8,
+      rating: 4.7,
+      photo: "https://images.unsplash.com/photo-1527980965255-ce40b3c2e65e?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Kenji shipped store apps for small Osaka businesses. His mobile courses end with something you can install — not a screenshot of a simulator.",
+        "Flutter and Kotlin: two courses, same standard. Lists from data, navigation that does not trap the back button, a build you can hand to a tester.",
+        "He keeps a cheap Android phone on the desk. If it janks there, the lesson is not done."
+      ]
+    },
+    {
+      id: "prof-martin-cole",
+      name: "Prof. Martin Cole",
+      role: "Math, CS foundations & career craft",
+      location: "Toronto, Canada",
+      years: 22,
+      rating: 4.8,
+      photo: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&crop=faces&w=800&h=800&q=80",
+      bio: [
+        "Martin taught discrete math and linear algebra in university, then coached senior engineers. His classes stay precise and human — proofs that earn a program, interviews that earn an offer.",
+        "Four courses: discrete math, linear algebra for ML, the staff-engineer path, and the career studio for portfolios. He will not let a slogan replace a worked example.",
+        "Office hours feel like a seminar. Bring a question you already tried to answer on paper."
+      ]
     }
   ],
 
@@ -823,7 +1335,27 @@ window.LMS = {
     "lin-alg-ml": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=900&q=80",
     "dsa-mastery": "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=900&q=80",
     "stats-it": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80",
-    "career-tech": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80"
+    "career-tech": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80",
+    "excel-dashboards": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80",
+    "chrome-pc-habits": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=900&q=80",
+    "meetings-zoom": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=80",
+    "vscode-first": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=900&q=80",
+    "bootstrap-layouts": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=900&q=80",
+    "python-scripts": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=900&q=80",
+    "typescript-js": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    "mongodb-node": "https://images.unsplash.com/photo-1593720213428-28a5b9e94613?auto=format&fit=crop&w=900&q=80",
+    "pandas-stories": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80",
+    "llm-apps": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=80",
+    "terraform-aws": "https://images.unsplash.com/photo-1544197150-b99a5804f8b7?auto=format&fit=crop&w=900&q=80",
+    "k8s-production": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
+    "android-kotlin": "https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?auto=format&fit=crop&w=900&q=80",
+    "figma-to-html": "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=900&q=80",
+    "mysql-queries": "https://images.unsplash.com/photo-1489875347897-49fbc7462794?auto=format&fit=crop&w=900&q=80",
+    "rust-systems": "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=900&q=80",
+    "staff-eng-path": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80",
+    "photo-edit-basics": "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=900&q=80",
+    "jwt-auth-apis": "https://images.unsplash.com/photo-1510511459019-5dda7724ec03?auto=format&fit=crop&w=900&q=80",
+    "network-plus-lab": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80"
   },
 
   studyImages: {
