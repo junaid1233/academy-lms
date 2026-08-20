@@ -10,31 +10,47 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="icon" href="assets/logo.svg" />
 </head>
-<body>
+<body class="profile-page">
   <header class="header"></header>
-  <div class="wrap page-head" id="profile-root">
-    <div class="crumbs"><a href="index.html">Home</a> / Account settings</div>
-    <h1>Account settings</h1>
-    <p class="muted">Edit your public details, photo, security, and learning preferences.</p>
-  </div>
-  <section class="section" style="padding-top:0">
-    <div class="wrap account-shell">
-      <aside class="account-nav" aria-label="Account sections">
-        <p class="account-nav-label">Profile</p>
-        <button type="button" class="account-nav-btn is-on" data-account-tab="basic">Public profile</button>
-        <button type="button" class="account-nav-btn" data-account-tab="photo">Photo</button>
-        <p class="account-nav-label">Account</p>
-        <button type="button" class="account-nav-btn" data-account-tab="security">Login &amp; security</button>
-        <button type="button" class="account-nav-btn" data-account-tab="privacy">Privacy</button>
-        <button type="button" class="account-nav-btn" data-account-tab="notifications">Notifications</button>
-        <p class="account-nav-label">Learning</p>
-        <button type="button" class="account-nav-btn" data-account-tab="learning">My learning</button>
-        <a class="account-nav-link" href="dashboard.html">Open dashboard</a>
-        <a class="account-nav-link" href="courses.html">Browse catalog</a>
-      </aside>
-      <div class="account-main" id="profile-card"></div>
+
+  <main class="profile-only">
+    <div class="wrap page-head" id="profile-root">
+      <div class="crumbs"><a href="index.html">Home</a> / Account settings</div>
+      <h1>Account settings</h1>
+      <p class="muted">Edit your public details, photo, security, and learning preferences.</p>
+    </div>
+    <section class="section" style="padding-top:0;padding-bottom:40px">
+      <div class="wrap account-shell">
+        <aside class="account-nav" aria-label="Account sections">
+          <p class="account-nav-label">Profile</p>
+          <button type="button" class="account-nav-btn is-on" data-account-tab="basic">Public profile</button>
+          <button type="button" class="account-nav-btn" data-account-tab="photo">Photo</button>
+          <p class="account-nav-label">Account</p>
+          <button type="button" class="account-nav-btn" data-account-tab="security">Login &amp; security</button>
+          <button type="button" class="account-nav-btn" data-account-tab="privacy">Privacy</button>
+          <button type="button" class="account-nav-btn" data-account-tab="notifications">Notifications</button>
+          <p class="account-nav-label">Learning</p>
+          <button type="button" class="account-nav-btn" data-account-tab="learning">My learning</button>
+          <a class="account-nav-link" href="dashboard.html">Open dashboard</a>
+        </aside>
+        <div class="account-main" id="profile-card"></div>
+      </div>
+    </section>
+  </main>
+
+  <section class="section profile-catalog" id="profile-catalog">
+    <div class="wrap">
+      <div class="section-h">
+        <div>
+          <h2>All courses</h2>
+          <p>Browse by category and select up to two for your desk.</p>
+        </div>
+      </div>
+      <div class="profile-cat-rail" id="profile-cat-rail"></div>
+      <div id="profile-course-sections"></div>
     </div>
   </section>
+
   <footer class="footer"></footer>
   <script type="module" src="js/supabase-client.js"></script>
   <script src="js/data.js"></script>

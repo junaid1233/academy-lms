@@ -288,7 +288,15 @@ ul { list-style: none; }
   padding: 10px 12px; border-radius: 12px; font-size: 14px; font-weight: 600;
 }
 .mega a:hover { background: var(--teal-s); }
-.mega small { display: block; font-weight: 500; color: var(--muted); font-size: 12px; }
+.mega a > div { display: grid; gap: 4px; }
+.mega small {
+  display: block;
+  font-weight: 550;
+  color: #5a6570;
+  font-size: 12.5px;
+  line-height: 1.35;
+  margin-top: 2px;
+}
 
 .search {
   flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;
@@ -1389,6 +1397,86 @@ body.home.is-learner .promo a { color: #f3c14e; font-weight: 700; }
   justify-items: center;
 }
 
+body.home.is-learner .home-marketing {
+  display: none !important;
+}
+.profile-page .promo,
+.profile-page .dual-cta,
+.profile-page .hero,
+.profile-page .band,
+.profile-page .learner-hero,
+.profile-page .learn-stack,
+.profile-page .cat-rail-bar,
+.profile-page .levels,
+.profile-page .people,
+.profile-page .quote,
+.profile-page .prog-card,
+.profile-page .home-marketing,
+.profile-page #home-study {
+  display: none !important;
+}
+.profile-page .profile-only {
+  min-height: 50vh;
+}
+.profile-catalog {
+  border-top: 1px solid var(--line);
+  background: #fff;
+  padding-top: 36px;
+}
+.profile-cat-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.profile-cat-pill {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--cream);
+  color: var(--navy);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.profile-cat-pill:hover { border-color: var(--teal); }
+.profile-cat-pill.is-on {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+.profile-cat-block { margin-bottom: 36px; }
+.profile-cat-title {
+  font-family: var(--display);
+  font-size: 24px;
+  color: var(--navy);
+  margin: 0;
+}
+.btn-show-more {
+  margin-top: 14px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1.5px solid var(--navy);
+  background: #fff;
+  color: var(--navy);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+.btn-show-more:hover {
+  background: var(--navy);
+  color: #fff;
+}
+.profile-catalog .grid-4.cat-course-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 @media (max-width: 900px) {
   .account-shell { grid-template-columns: 1fr; }
   .account-nav { position: static; grid-template-columns: repeat(2, 1fr); }
@@ -1399,6 +1487,9 @@ body.home.is-learner .promo a { color: #f3c14e; font-weight: 700; }
   .learn-card { grid-template-columns: 96px 1fr; }
   .learn-card img,
   .learn-card-fallback { width: 96px; height: 64px; }
+  .profile-catalog .grid-4.cat-course-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 .header-bar .btn-logout {
   height: 40px;

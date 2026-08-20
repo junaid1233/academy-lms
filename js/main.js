@@ -854,6 +854,7 @@
       </div>`;
     $$(".footer").forEach((f) => {
       f.classList.add("site-footer");
+      f.classList.remove("footer-slim");
       f.innerHTML = html;
     });
   }
@@ -2131,7 +2132,102 @@
       });
       const startTab = new URLSearchParams(location.search).get("tab") || "basic";
       paint(startTab);
+      mountCourseCatalogByCategory({
+        rail: "#profile-cat-rail",
+        host: "#profile-course-sections",
+        scrollRoot: "#profile-catalog"
+      });
     }
+  }
+
+  function mountCourseCatalogByCategory({ rail, host, scrollRoot }) {
+    const hostEl = $(host);
+    const railEl = $(rail);
+    if (!hostEl || !railEl) return;
+    const PREVIEW = 4;
+
+    const groups = LMS.categories
+      .map((cat) => ({
+        ...cat,
+        courses: LMS.courses.filter((c) => c.category === cat.id)
+      }))
+      .filter((g) => g.courses.length);
+
+    railEl.innerHTML = [
+      `<button type="button" class="profile-cat-pill is-on" data-jump-cat="all">All</button>`,
+      ...groups.map(
+        (g) =>
+          `<button type="button" class="profile-cat-pill" data-jump-cat="${g.id}">${g.name}</button>`
+      )
+    ].join("");
+
+    hostEl.innerHTML = groups
+      .map((g) => {
+        const more = Math.max(0, g.courses.length - PREVIEW);
+        return `
+      <div class="profile-cat-block" id="cat-block-${g.id}" data-cat-block="${g.id}">
+        <div class="section-h" style="margin-bottom:14px">
+          <div>
+            <h3 class="profile-cat-title">${g.name}</h3>
+            <p class="muted">${g.courses.length} course${g.courses.length === 1 ? "" : "s"}</p>
+          </div>
+        </div>
+        <div class="grid-4 cat-course-grid" data-cat-grid="${g.id}"></div>
+        ${
+          more
+            ? `<button type="button" class="btn-show-more" data-show-more="${g.id}" data-more="${more}">Show ${more} more</button>`
+            : ""
+        }
+      </div>`;
+      })
+      .join("");
+
+    groups.forEach((g) => {
+      const grid = hostEl.querySelector(`[data-cat-grid="${g.id}"]`);
+      if (!grid) return;
+      const paint = (expanded) => {
+        const list = expanded ? g.courses : g.courses.slice(0, PREVIEW);
+        grid.innerHTML = list.map(courseCard).join("");
+        bindCoursePicks(grid);
+      };
+      paint(false);
+      const moreBtn = hostEl.querySelector(`[data-show-more="${g.id}"]`);
+      if (moreBtn) {
+        moreBtn.addEventListener("click", () => {
+          const open = moreBtn.getAttribute("data-open") === "1";
+          if (open) {
+            paint(false);
+            moreBtn.setAttribute("data-open", "0");
+            moreBtn.textContent = "Show " + moreBtn.getAttribute("data-more") + " more";
+          } else {
+            paint(true);
+            moreBtn.setAttribute("data-open", "1");
+            moreBtn.textContent = "Show less";
+          }
+        });
+      }
+    });
+
+    const showCat = (id) => {
+      railEl.querySelectorAll("[data-jump-cat]").forEach((b) =>
+        b.classList.toggle("is-on", b.getAttribute("data-jump-cat") === id)
+      );
+      hostEl.querySelectorAll("[data-cat-block]").forEach((block) => {
+        block.hidden = id !== "all" && block.getAttribute("data-cat-block") !== id;
+      });
+    };
+
+    railEl.querySelectorAll("[data-jump-cat]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-jump-cat");
+        showCat(id);
+        if (id !== "all") {
+          $("#cat-block-" + id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          $(scrollRoot)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
   }
 
   function mountLearnerHome() {
@@ -2194,11 +2290,35 @@
           </div>
         </div>`;
     }
-    const dual = $(".dual-cta");
-    if (dual) {
-      const section = dual.closest(".section");
-      if (section) section.hidden = true;
+    $$(".home-marketing").forEach((el) => {
+      el.hidden = true;
+    });
+
+    let catalog = $("#learner-catalog");
+    if (!catalog) {
+      catalog = document.createElement("section");
+      catalog.className = "section profile-catalog";
+      catalog.id = "learner-catalog";
+      catalog.innerHTML = `
+        <div class="wrap">
+          <div class="section-h">
+            <div>
+              <h2>All courses</h2>
+              <p>Same categories as the catalog — pick up to two for your desk.</p>
+            </div>
+          </div>
+          <div class="profile-cat-rail" id="learner-cat-rail"></div>
+          <div id="learner-course-sections"></div>
+        </div>`;
+      const footer = $("footer.footer");
+      if (footer) footer.insertAdjacentElement("beforebegin", catalog);
+      else document.body.appendChild(catalog);
     }
+    mountCourseCatalogByCategory({
+      rail: "#learner-cat-rail",
+      host: "#learner-course-sections",
+      scrollRoot: "#learner-catalog"
+    });
   }
 
   mountLearnerHome();
