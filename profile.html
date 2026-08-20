@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=1180" />
-  <title>Profile — LMS Academy</title>
+  <title>Account settings — LMS Academy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -13,17 +13,26 @@
 <body>
   <header class="header"></header>
   <div class="wrap page-head" id="profile-root">
-    <div class="crumbs"><a href="index.html">Home</a> / Profile</div>
-    <h1>Campus pass</h1>
-    <p class="muted">Your name on the door, two ledgers on the desk.</p>
+    <div class="crumbs"><a href="index.html">Home</a> / Account settings</div>
+    <h1>Account settings</h1>
+    <p class="muted">Edit your public details, photo, security, and learning preferences.</p>
   </div>
   <section class="section" style="padding-top:0">
-    <div class="wrap profile-wrap">
-      <article class="profile-card" id="profile-card"></article>
-      <p class="profile-foot-links">
-        <a class="btn btn-navy" href="dashboard.html">Open dashboard</a>
-        <a class="btn btn-ghost" href="courses.html">Browse catalog</a>
-      </p>
+    <div class="wrap account-shell">
+      <aside class="account-nav" aria-label="Account sections">
+        <p class="account-nav-label">Profile</p>
+        <button type="button" class="account-nav-btn is-on" data-account-tab="basic">Public profile</button>
+        <button type="button" class="account-nav-btn" data-account-tab="photo">Photo</button>
+        <p class="account-nav-label">Account</p>
+        <button type="button" class="account-nav-btn" data-account-tab="security">Login &amp; security</button>
+        <button type="button" class="account-nav-btn" data-account-tab="privacy">Privacy</button>
+        <button type="button" class="account-nav-btn" data-account-tab="notifications">Notifications</button>
+        <p class="account-nav-label">Learning</p>
+        <button type="button" class="account-nav-btn" data-account-tab="learning">My learning</button>
+        <a class="account-nav-link" href="dashboard.html">Open dashboard</a>
+        <a class="account-nav-link" href="courses.html">Browse catalog</a>
+      </aside>
+      <div class="account-main" id="profile-card"></div>
     </div>
   </section>
   <footer class="footer"></footer>

@@ -389,11 +389,67 @@
     return (crypto.randomUUID && crypto.randomUUID()) || "lms-" + Date.now() + "-" + Math.random().toString(16).slice(2);
   }
 
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function emptyStudentProfile() {
+    return {
+      firstName: "",
+      lastName: "",
+      headline: "",
+      bio: "",
+      website: "",
+      twitter: "",
+      linkedin: "",
+      facebook: "",
+      youtube: "",
+      photo: "",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+      showProfile: true,
+      emailTips: true,
+      emailReminders: true
+    };
+  }
+
+  function normalizeStudentProfile(p, nameFallback) {
+    p = p && typeof p === "object" ? p : {};
+    const full = String(nameFallback || "").trim();
+    const parts = full ? full.split(/\s+/) : [];
+    return {
+      firstName: p.firstName || parts[0] || "",
+      lastName: p.lastName || (parts.length > 1 ? parts.slice(1).join(" ") : ""),
+      headline: p.headline || "",
+      bio: p.bio || "",
+      website: p.website || "",
+      twitter: p.twitter || "",
+      linkedin: p.linkedin || "",
+      facebook: p.facebook || "",
+      youtube: p.youtube || "",
+      photo: p.photo || "",
+      timezone: p.timezone || emptyStudentProfile().timezone,
+      showProfile: p.showProfile !== false,
+      emailTips: p.emailTips !== false,
+      emailReminders: p.emailReminders !== false
+    };
+  }
+
+  function displayNameFromProfile(profile, fallback) {
+    const n = [profile?.firstName, profile?.lastName].filter(Boolean).join(" ").trim();
+    return n || fallback || "Learner";
+  }
+
   function normalizeRecord(rec) {
     rec = rec || {};
+    const profile = normalizeStudentProfile(rec.profile, rec.name);
+    const name = displayNameFromProfile(profile, rec.name || "");
     return {
       id: rec.id || newUserId(),
-      name: rec.name || "",
+      name,
       email: String(rec.email || "").trim().toLowerCase(),
       role: rec.role || "student",
       enrolled: Array.isArray(rec.enrolled) ? rec.enrolled.slice(0, 2) : [],
@@ -401,6 +457,7 @@
       lang: rec.lang || localStorage.getItem("lms-lang") || "en",
       progress: rec.progress && typeof rec.progress === "object" ? rec.progress : {},
       study: rec.study && typeof rec.study === "object" ? rec.study : {},
+      profile,
       teachStatus: rec.teachStatus === "approved" || rec.teachStatus === "pending" ? rec.teachStatus : "none",
       teachProfile:
         rec.teachProfile && typeof rec.teachProfile === "object"
@@ -538,6 +595,7 @@
             study: rec.study,
             teachStatus: rec.teachStatus,
             teachProfile: rec.teachProfile,
+            profile: rec.profile,
             updatedAt: rec.updatedAt
           }
         });
@@ -563,7 +621,8 @@
           progress: rec.progress,
           study: rec.study,
           teachStatus: rec.teachStatus,
-          teachProfile: rec.teachProfile
+          teachProfile: rec.teachProfile,
+          profile: rec.profile
         }
       }
     });
@@ -594,7 +653,8 @@
         progress: meta.progress || local.progress,
         study: meta.study || local.study,
         teachStatus: meta.teachStatus || local.teachStatus,
-        teachProfile: meta.teachProfile || local.teachProfile
+        teachProfile: meta.teachProfile || local.teachProfile,
+        profile: meta.profile || local.profile
     });
   }
 
@@ -619,7 +679,8 @@
         progress: Object.keys(meta.progress || {}).length ? meta.progress : local.progress,
         study: Object.keys(meta.study || {}).length ? meta.study : local.study,
         teachStatus: meta.teachStatus || local.teachStatus,
-        teachProfile: meta.teachProfile || local.teachProfile
+        teachProfile: meta.teachProfile || local.teachProfile,
+        profile: meta.profile || local.profile
       });
       const rec = activeRecord();
       if (rec?.lang) applyLang(rec.lang);
@@ -653,10 +714,17 @@
       return `<a class="btn btn-login" href="login.html" data-i18n="login">Log In</a>
         <a class="btn btn-signup" href="register.html" data-i18n="join">Join for Free</a>`;
     }
-    const letter = (user.name || user.email || "U").trim().charAt(0).toUpperCase();
-    return `<a class="user-chip" href="profile.html" title="Your profile">
-          <span class="user-avatar">${letter}</span>
-          <span>${user.name || "Learner"}</span>
+    const rec = activeRecord();
+    const name = rec?.name || user.name || "Learner";
+    const letter = name.trim().charAt(0).toUpperCase();
+    const photo = rec?.profile?.photo;
+    const avatar = photo
+      ? `<img class="user-avatar-img" src="${photo}" alt="">`
+      : `<span class="user-avatar">${letter}</span>`;
+    return `<a class="btn btn-login" href="dashboard.html">My learning</a>
+        <a class="user-chip" href="profile.html" title="Account settings">
+          ${avatar}
+          <span>${name}</span>
         </a>
         <button class="btn-logout" type="button" id="logout-btn">Log out</button>`;
   }
@@ -728,6 +796,14 @@
         </div>
         </div>
       </div>`;
+    $("#logout-btn")?.addEventListener("click", async () => {
+      try {
+        await window.lmsSupabase?.auth.signOut();
+      } catch (e) {}
+      localStorage.removeItem("lms-user");
+      location.href = "index.html";
+    });
+    bindLang();
   }
 
   function col(title, items) {
@@ -873,13 +949,6 @@
   mountHeader();
   mountFooter();
   bindLang();
-  $("#logout-btn")?.addEventListener("click", async () => {
-    try {
-      await window.lmsSupabase?.auth.signOut();
-    } catch (e) {}
-    localStorage.removeItem("lms-user");
-    location.href = "index.html";
-  });
 
   const menuBtn = $("#menu-toggle");
   const mobile = $("#mobile-nav");
@@ -1692,76 +1761,448 @@
     if (!user) {
       location.href = "login.html";
     } else {
-      const rec = activeRecord() || persistRecord(normalizeRecord(user));
-      const letter = (rec.name || rec.email || "U").trim().charAt(0).toUpperCase();
-      const roleLabel =
-        rec.role === "teacher" ? "Teacher" : rec.role === "both" ? "Student + teacher" : "Student";
-      const ids = rec.enrolled;
-      const enrolled = LMS.courses.filter((c) => ids.includes(c.id));
-      const slots = [0, 1]
-        .map((i) => {
-          const c = enrolled[i];
-          if (!c) {
-            return `<a class="desk-slot is-empty" href="courses.html">
-            <span class="desk-slot-kicker">Open seat ${i + 1}</span>
-            <strong>Claim a course</strong>
-            <span>Two ledgers max on this desk.</span>
-          </a>`;
-          }
-          const img = courseImg(c);
-          return `<article class="desk-slot">
-          ${img ? `<img src="${img}" alt="">` : ""}
-          <span class="desk-slot-kicker">Seat ${i + 1}</span>
-          <strong>${c.title}</strong>
-          <span>${c.instructor} · ${c.level}</span>
-          <div class="desk-slot-actions">
-            <a class="btn btn-coral" href="course.html?id=${c.id}&start=1">Start</a>
-            <button type="button" class="btn btn-ghost" data-drop-course="${c.id}">Drop</button>
-          </div>
-        </article>`;
-        })
-        .join("");
-      $("#profile-card").innerHTML = `
-        <div class="profile-banner">
-          <div class="profile-seal">${letter}</div>
-          <div>
-            <p class="profile-kicker">Campus pass</p>
-            <h2>${rec.name || "Learner"}</h2>
-            <p class="muted">${roleLabel} · two-course desk</p>
-            <p class="profile-idline">Campus ID · ${rec.id}</p>
-          </div>
-        </div>
-        <div class="profile-facts">
-          <div><span>Name</span><b>${rec.name || "—"}</b></div>
-          <div><span>Email</span><b>${rec.email}</b></div>
-          <div><span>Role</span><b>${roleLabel}</b></div>
-          <div><span>Desk</span><b>${enrolled.length} / 2 seats</b></div>
-        </div>
-        <h3 class="profile-desk-title">Your two-seat desk</h3>
-        <div class="desk-grid">${slots}</div>
-        ${
-          rec.teachProfile.headline
-            ? `<h3 class="profile-desk-title">Instructor profile</h3>
-        <div class="desk-slot" style="margin:0 24px 24px">
-          <span class="desk-slot-kicker">${rec.teachStatus === "approved" ? "Approved to teach" : rec.teachStatus === "pending" ? "Waiting on steward" : "Draft"}</span>
-          <strong>${rec.teachProfile.headline}</strong>
-          <span>${rec.teachProfile.bio}</span>
-          <div class="desk-slot-actions">
-            <a class="btn btn-navy" href="instructor-hub.html">Instructor hub</a>
-          </div>
-        </div>`
-            : rec.role === "teacher" || rec.role === "both"
-              ? `<p style="padding:0 24px 24px"><a class="btn btn-navy" href="teach.html">Create instructor profile</a></p>`
-              : `<p style="padding:0 24px 24px"><a class="btn btn-ghost" href="teach.html">Ask to teach</a></p>`
-        }`;
-      $$("[data-drop-course]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          toggleSelectCourse(btn.getAttribute("data-drop-course"));
-          location.reload();
-        });
+      let rec = activeRecord() || persistRecord(normalizeRecord(user));
+      const panel = $("#profile-card");
+      const langNames = {
+        en: "English",
+        ur: "Urdu",
+        hi: "Hindi",
+        zh: "Chinese",
+        ar: "Arabic",
+        ja: "Japanese"
+      };
+
+      function progressPct(courseId) {
+        const p = rec.progress?.[courseId];
+        if (!p?.done) return 0;
+        return Math.min(100, Math.round((p.done.length / 12) * 100)) || Math.min(100, p.done.length * 8);
+      }
+
+      function flashSave(msg) {
+        let el = $("#account-save-flash");
+        if (!el) {
+          el = document.createElement("div");
+          el.id = "account-save-flash";
+          document.body.appendChild(el);
+        }
+        el.textContent = msg || "Saved";
+        el.classList.add("is-on");
+        clearTimeout(flashSave._t);
+        flashSave._t = setTimeout(() => el.classList.remove("is-on"), 2400);
+      }
+
+      function avatarHtml(sizeClass) {
+        const letter = (rec.name || rec.email || "U").trim().charAt(0).toUpperCase();
+        if (rec.profile.photo) {
+          return `<img class="acct-avatar ${sizeClass || ""}" src="${rec.profile.photo}" alt="">`;
+        }
+        return `<div class="acct-avatar acct-avatar-letter ${sizeClass || ""}">${letter}</div>`;
+      }
+
+      function paint(tab) {
+        $$("[data-account-tab]").forEach((b) =>
+          b.classList.toggle("is-on", b.getAttribute("data-account-tab") === tab)
+        );
+        const p = rec.profile;
+
+        if (tab === "basic") {
+          panel.innerHTML = `
+            <div class="acct-panel">
+              <header class="acct-panel-head">
+                <div>
+                  <h2>Public profile</h2>
+                  <p class="muted">These details can appear on your learner card across LMS Academy.</p>
+                </div>
+                ${avatarHtml("acct-avatar-sm")}
+              </header>
+              <form class="acct-form" id="acct-basic-form">
+                <div class="acct-row-2">
+                  <label>First name<input name="firstName" type="text" maxlength="40" value="${escapeHtml(p.firstName)}" required /></label>
+                  <label>Last name<input name="lastName" type="text" maxlength="40" value="${escapeHtml(p.lastName)}" /></label>
+                </div>
+                <label>Headline
+                  <input name="headline" type="text" maxlength="60" value="${escapeHtml(p.headline)}" placeholder="e.g. Aspiring full-stack developer" />
+                  <span class="acct-hint">Short line under your name (max 60 characters).</span>
+                </label>
+                <label>About you
+                  <textarea name="bio" rows="5" maxlength="500" placeholder="Tell other learners and instructors about your goals.">${escapeHtml(p.bio)}</textarea>
+                  <span class="acct-hint">Plain text, up to 500 characters.</span>
+                </label>
+                <label>Language
+                  <select name="lang">
+                    ${Object.keys(langNames)
+                      .map((k) => `<option value="${k}"${rec.lang === k ? " selected" : ""}>${langNames[k]}</option>`)
+                      .join("")}
+                  </select>
+                </label>
+                <label>Website<input name="website" type="url" value="${escapeHtml(p.website)}" placeholder="https://" /></label>
+                <div class="acct-row-2">
+                  <label>X / Twitter<input name="twitter" type="text" value="${escapeHtml(p.twitter)}" placeholder="@handle" /></label>
+                  <label>LinkedIn<input name="linkedin" type="text" value="${escapeHtml(p.linkedin)}" placeholder="Profile URL or username" /></label>
+                </div>
+                <div class="acct-row-2">
+                  <label>Facebook<input name="facebook" type="text" value="${escapeHtml(p.facebook)}" /></label>
+                  <label>YouTube<input name="youtube" type="text" value="${escapeHtml(p.youtube)}" /></label>
+                </div>
+                <label>Timezone
+                  <input name="timezone" type="text" value="${escapeHtml(p.timezone)}" placeholder="Asia/Karachi" />
+                </label>
+                <div class="acct-actions">
+                  <button class="btn btn-navy" type="submit">Save profile</button>
+                </div>
+              </form>
+            </div>`;
+          $("#acct-basic-form")?.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const nextProfile = {
+              ...p,
+              firstName: String(fd.get("firstName") || "").trim(),
+              lastName: String(fd.get("lastName") || "").trim(),
+              headline: String(fd.get("headline") || "").trim().slice(0, 60),
+              bio: String(fd.get("bio") || "").trim().slice(0, 500),
+              website: String(fd.get("website") || "").trim(),
+              twitter: String(fd.get("twitter") || "").trim(),
+              linkedin: String(fd.get("linkedin") || "").trim(),
+              facebook: String(fd.get("facebook") || "").trim(),
+              youtube: String(fd.get("youtube") || "").trim(),
+              timezone: String(fd.get("timezone") || "").trim() || p.timezone
+            };
+            const name = displayNameFromProfile(nextProfile, rec.name);
+            rec = persistRecord({
+              ...rec,
+              name,
+              lang: String(fd.get("lang") || rec.lang),
+              profile: nextProfile
+            });
+            applyLang(rec.lang);
+            flashSave("Profile saved");
+            paint("basic");
+            mountHeader();
+          });
+          return;
+        }
+
+        if (tab === "photo") {
+          panel.innerHTML = `
+            <div class="acct-panel">
+              <header class="acct-panel-head">
+                <div>
+                  <h2>Photo</h2>
+                  <p class="muted">Add a clear face photo so instructors and classmates recognise you.</p>
+                </div>
+              </header>
+              <div class="acct-photo-block">
+                ${avatarHtml("acct-avatar-lg")}
+                <div>
+                  <p class="muted" style="margin-bottom:12px">JPG or PNG, kept on this device (and synced to your account metadata when signed in).</p>
+                  <label class="btn btn-navy acct-file-btn">Upload photo
+                    <input id="acct-photo-input" type="file" accept="image/*" hidden />
+                  </label>
+                  ${p.photo ? `<button type="button" class="btn btn-ghost" id="acct-photo-clear">Remove</button>` : ""}
+                </div>
+              </div>
+            </div>`;
+          $("#acct-photo-input")?.addEventListener("change", (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            if (file.size > 900000) {
+              flashSave("Choose a smaller image (under ~900KB)");
+              return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+              rec = persistRecord({
+                ...rec,
+                profile: { ...rec.profile, photo: String(reader.result || "") }
+              });
+              flashSave("Photo updated");
+              paint("photo");
+              mountHeader();
+            };
+            reader.readAsDataURL(file);
+          });
+          $("#acct-photo-clear")?.addEventListener("click", () => {
+            rec = persistRecord({ ...rec, profile: { ...rec.profile, photo: "" } });
+            flashSave("Photo removed");
+            paint("photo");
+            mountHeader();
+          });
+          return;
+        }
+
+        if (tab === "security") {
+          panel.innerHTML = `
+            <div class="acct-panel">
+              <header class="acct-panel-head">
+                <div>
+                  <h2>Login &amp; security</h2>
+                  <p class="muted">Email is your campus ID. Change password with your current one.</p>
+                </div>
+              </header>
+              <form class="acct-form" id="acct-security-form">
+                <label>Email
+                  <input type="email" value="${rec.email}" readonly />
+                  <span class="acct-hint">Email cannot be changed here.</span>
+                </label>
+                <label>Current password<input name="current" type="password" autocomplete="current-password" required /></label>
+                <label>New password<input name="next" type="password" autocomplete="new-password" required /></label>
+                <label>Confirm new password<input name="confirm" type="password" autocomplete="new-password" required /></label>
+                <p class="acct-hint">Use 8+ characters with upper, lower, number, and a symbol.</p>
+                <p class="acct-error" id="acct-sec-err" hidden></p>
+                <div class="acct-actions">
+                  <button class="btn btn-navy" type="submit">Update password</button>
+                </div>
+              </form>
+            </div>`;
+          $("#acct-security-form")?.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const errEl = $("#acct-sec-err");
+            const fd = new FormData(e.target);
+            const current = String(fd.get("current") || "");
+            const next = String(fd.get("next") || "");
+            const confirm = String(fd.get("confirm") || "");
+            errEl.hidden = true;
+            if (next !== confirm) {
+              errEl.hidden = false;
+              errEl.textContent = "New passwords do not match.";
+              return;
+            }
+            if (!isPasswordStrong(next)) {
+              errEl.hidden = false;
+              errEl.textContent = "New password needs: " + passwordGaps(next).join(", ") + ".";
+              return;
+            }
+            const accounts = getAccounts();
+            const i = accounts.findIndex((a) => a.email === rec.email);
+            if (i < 0 || accounts[i].password !== current) {
+              errEl.hidden = false;
+              errEl.textContent = "Current password is incorrect.";
+              return;
+            }
+            accounts[i].password = next;
+            saveAccounts(accounts);
+            try {
+              const sb = window.lmsSupabase;
+              if (sb) {
+                const { error } = await sb.auth.updateUser({ password: next });
+                if (error) console.error(error.message);
+              }
+            } catch (err) {}
+            e.target.reset();
+            flashSave("Password updated");
+          });
+          return;
+        }
+
+        if (tab === "privacy") {
+          panel.innerHTML = `
+            <div class="acct-panel">
+              <header class="acct-panel-head">
+                <div>
+                  <h2>Privacy</h2>
+                  <p class="muted">Control what other learners can see about you.</p>
+                </div>
+              </header>
+              <form class="acct-form" id="acct-privacy-form">
+                <label class="acct-check">
+                  <input type="checkbox" name="showProfile" ${p.showProfile ? "checked" : ""} />
+                  <span><b>Show my public profile</b><small>Name, headline, and about text may appear on campus pages.</small></span>
+                </label>
+                <div class="acct-actions">
+                  <button class="btn btn-navy" type="submit">Save privacy</button>
+                </div>
+              </form>
+            </div>`;
+          $("#acct-privacy-form")?.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            rec = persistRecord({
+              ...rec,
+              profile: { ...p, showProfile: fd.get("showProfile") === "on" }
+            });
+            flashSave("Privacy saved");
+            paint("privacy");
+          });
+          return;
+        }
+
+        if (tab === "notifications") {
+          panel.innerHTML = `
+            <div class="acct-panel">
+              <header class="acct-panel-head">
+                <div>
+                  <h2>Notifications</h2>
+                  <p class="muted">Choose which campus emails you want (stored with your account).</p>
+                </div>
+              </header>
+              <form class="acct-form" id="acct-notify-form">
+                <label class="acct-check">
+                  <input type="checkbox" name="emailTips" ${p.emailTips ? "checked" : ""} />
+                  <span><b>Learning tips</b><small>Occasional study tips and new catalog picks.</small></span>
+                </label>
+                <label class="acct-check">
+                  <input type="checkbox" name="emailReminders" ${p.emailReminders ? "checked" : ""} />
+                  <span><b>Course reminders</b><small>Nudge when you have unfinished lectures on your desk.</small></span>
+                </label>
+                <div class="acct-actions">
+                  <button class="btn btn-navy" type="submit">Save preferences</button>
+                </div>
+              </form>
+            </div>`;
+          $("#acct-notify-form")?.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            rec = persistRecord({
+              ...rec,
+              profile: {
+                ...p,
+                emailTips: fd.get("emailTips") === "on",
+                emailReminders: fd.get("emailReminders") === "on"
+              }
+            });
+            flashSave("Notification preferences saved");
+            paint("notifications");
+          });
+          return;
+        }
+
+        if (tab === "learning") {
+          const enrolled = LMS.courses.filter((c) => rec.enrolled.includes(c.id));
+          const slots = [0, 1]
+            .map((i) => {
+              const c = enrolled[i];
+              if (!c) {
+                return `<a class="desk-slot is-empty" href="courses.html">
+                  <span class="desk-slot-kicker">Open seat ${i + 1}</span>
+                  <strong>Add a course</strong>
+                  <span>You can keep two courses active at once.</span>
+                </a>`;
+              }
+              const img = courseImg(c);
+              const pct = progressPct(c.id);
+              return `<article class="desk-slot">
+                ${img ? `<img src="${img}" alt="">` : ""}
+                <span class="desk-slot-kicker">Seat ${i + 1}</span>
+                <strong>${c.title}</strong>
+                <span>${c.instructor} · ${c.level}</span>
+                <div class="bar"><i style="width:${pct}%"></i></div>
+                <small class="muted">${pct}% complete</small>
+                <div class="desk-slot-actions">
+                  <a class="btn btn-coral" href="course.html?id=${c.id}&start=1">Continue</a>
+                  <button type="button" class="btn btn-ghost" data-drop-course="${c.id}">Remove</button>
+                </div>
+              </article>`;
+            })
+            .join("");
+          panel.innerHTML = `
+            <div class="acct-panel">
+              <header class="acct-panel-head">
+                <div>
+                  <h2>My learning</h2>
+                  <p class="muted">Your two-course desk — start, continue, or free a seat.</p>
+                </div>
+                <a class="btn btn-ghost" href="dashboard.html">Full dashboard</a>
+              </header>
+              <div class="desk-grid" style="padding:0">${slots}</div>
+              ${
+                rec.teachProfile.headline
+                  ? `<div class="acct-teach-note">
+                      <span class="desk-slot-kicker">${rec.teachStatus === "approved" ? "Approved to teach" : rec.teachStatus === "pending" ? "Waiting on steward" : "Draft"}</span>
+                      <strong>${rec.teachProfile.headline}</strong>
+                      <p class="muted">${rec.teachProfile.bio}</p>
+                      <a class="btn btn-navy" href="instructor-hub.html">Instructor hub</a>
+                    </div>`
+                  : `<p style="margin-top:18px"><a class="btn btn-ghost" href="teach.html">Ask to teach on campus</a></p>`
+              }
+            </div>`;
+          $$("[data-drop-course]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              toggleSelectCourse(btn.getAttribute("data-drop-course"));
+              rec = activeRecord();
+              paint("learning");
+            });
+          });
+        }
+      }
+
+      $$("[data-account-tab]").forEach((btn) => {
+        btn.addEventListener("click", () => paint(btn.getAttribute("data-account-tab")));
       });
+      const startTab = new URLSearchParams(location.search).get("tab") || "basic";
+      paint(startTab);
     }
   }
+
+  function mountLearnerHome() {
+    if (!$("body.home") || !currentUser()) return;
+    const rec = activeRecord();
+    if (!rec) return;
+    document.body.classList.add("is-learner");
+    const promo = $(".promo");
+    if (promo) {
+      promo.innerHTML = `Signed in as <strong>${rec.name || "Learner"}</strong> · <a href="profile.html">Account settings</a> · <a href="dashboard.html">My learning</a>`;
+    }
+    const first = (rec.profile?.firstName || rec.name || "there").split(" ")[0];
+    const enrolled = LMS.courses.filter((c) => rec.enrolled.includes(c.id));
+    const hero = $(".hero");
+    if (hero) {
+      const learnCards = enrolled.length
+        ? enrolled
+            .map((c) => {
+              const img = courseImg(c);
+              const p = rec.progress?.[c.id];
+              const pct = p?.done ? Math.min(100, Math.round((p.done.length / 12) * 100) || p.done.length * 8) : 12;
+              return `<a class="learn-card" href="course.html?id=${c.id}&start=1">
+                ${img ? `<img src="${img}" alt="">` : `<div class="learn-card-fallback"></div>`}
+                <div>
+                  <span class="learn-kicker">${c.level}</span>
+                  <strong>${c.title}</strong>
+                  <span class="muted">${c.instructor}</span>
+                  <div class="bar"><i style="width:${pct}%"></i></div>
+                  <em>${pct}% complete · Continue</em>
+                </div>
+              </a>`;
+            })
+            .join("")
+        : `<div class="learn-empty">
+            <strong>No courses on your desk yet</strong>
+            <p class="muted">Pick up to two courses and they will show here when you return.</p>
+            <a class="btn btn-coral" href="courses.html">Browse courses</a>
+          </div>`;
+      hero.innerHTML = `
+        <div class="wrap learner-hero">
+          <div class="learner-hero-copy">
+            <p class="kicker">Welcome back</p>
+            <h1>Let's keep learning, <em>${escapeHtml(first)}</em>.</h1>
+            <p class="lead">${escapeHtml(rec.profile?.headline || "Pick up where you left off, or claim a new seat from the catalog.")}</p>
+            <div class="chips">
+              <a class="chip is-on" href="dashboard.html">My learning</a>
+              <a class="chip" href="courses.html">Browse catalog</a>
+              <a class="chip" href="profile.html">Account settings</a>
+              <a class="chip" href="study.html">Study Hub</a>
+            </div>
+          </div>
+          <div class="learner-desk">
+            <div class="section-h" style="margin-bottom:12px">
+              <div>
+                <h2 style="font-size:22px">My learning</h2>
+                <p>${enrolled.length} / 2 active seats</p>
+              </div>
+            </div>
+            <div class="learn-stack">${learnCards}</div>
+          </div>
+        </div>`;
+    }
+    const dual = $(".dual-cta");
+    if (dual) {
+      const section = dual.closest(".section");
+      if (section) section.hidden = true;
+    }
+  }
+
+  mountLearnerHome();
+
 
   window.addEventListener("lms-ready", () => {
     cloudHydrate().then(() => {
