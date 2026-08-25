@@ -51,9 +51,21 @@
         <h2 class="serif" style="font-size:28px;color:var(--navy);margin-bottom:10px">What you’ll learn</h2>
         <p id="c-desc" style="margin-bottom:14px"></p>
         <ul id="c-outcomes" style="display:grid;gap:8px;font-size:15px"></ul>
-        <h2 class="serif" style="font-size:28px;color:var(--navy);margin:28px 0 8px">Curriculum</h2>
-        <p class="muted" id="c-curric-meta" style="margin-bottom:12px"></p>
+        <h2 class="serif course-content-title">Course content</h2>
+        <div class="curric-toolbar">
+          <p class="muted" id="c-curric-meta"></p>
+          <button type="button" class="curric-expand" id="c-expand-all">Expand all sections</button>
+        </div>
         <div class="curric" id="c-curric"></div>
+        <button type="button" class="btn-show-sections" id="c-show-sections" hidden></button>
+        <div class="course-reqs" id="c-requirements">
+          <h2 class="serif">Requirements</h2>
+          <ul id="c-req-list"></ul>
+        </div>
+        <div class="course-desc-block" id="c-description">
+          <h2 class="serif">Description</h2>
+          <p id="c-desc-long"></p>
+        </div>
         <div id="c-instructor"></div>
       </div>
       <aside class="buy">

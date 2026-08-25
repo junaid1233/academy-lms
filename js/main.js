@@ -64,81 +64,10 @@
       sections.push({
         from,
         to,
-        lectures,
-        test: {
-          type: "test",
-          from,
-          to,
-          title: "Short test · lectures " + from + "–" + to
-        }
+        lectures
       });
     }
     return { n, titles, sections };
-  }
-
-  function shuffle(list) {
-    const a = list.slice();
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const t = a[i];
-      a[i] = a[j];
-      a[j] = t;
-    }
-    return a;
-  }
-
-  function uniqueOptions(correct, pool) {
-    const opts = [correct];
-    shuffle(pool.filter((x) => x && x !== correct)).forEach((x) => {
-      if (opts.length < 4 && !opts.includes(x)) opts.push(x);
-    });
-    while (opts.length < 4) opts.push("Review the lecture notes again");
-    return shuffle(opts);
-  }
-
-  function makeTestQuestions(course, from, to, titles) {
-    const slice = titles.slice(from - 1, to);
-    const pool = titles.concat(course.outcomes || []);
-    const first = slice[0];
-    const mid = slice[Math.floor((slice.length - 1) / 2)];
-    const last = slice[slice.length - 1];
-    return [
-      {
-        q: "This short test covers which lectures?",
-        options: uniqueOptions("Lectures " + from + "–" + to, [
-          "Lectures 1–3 only",
-          "The whole catalog",
-          "Lectures " + (from + 7) + "–" + (to + 7),
-          "Only the final exam"
-        ]),
-        answer: "Lectures " + from + "–" + to
-      },
-      {
-        q: "What is the first topic in this block?",
-        options: uniqueOptions(first, pool),
-        answer: first
-      },
-      {
-        q: "Which topic is in this block of lectures?",
-        options: uniqueOptions(mid, pool),
-        answer: mid
-      },
-      {
-        q: "What is the last lecture before this test?",
-        options: uniqueOptions(last, pool),
-        answer: last
-      },
-      {
-        q: "If you miss a question, what should you do?",
-        options: uniqueOptions("Re-watch those 7 lectures, then retry the test", [
-          "Skip to an expert course",
-          "Ignore it and close the tab",
-          "Change the instructor",
-          "Unlock the next path without practice"
-        ]),
-        answer: "Re-watch those 7 lectures, then retry the test"
-      }
-    ];
   }
 
   function instSlug(name) {
@@ -265,6 +194,7 @@
     if (ids.includes(courseId)) {
       setEnrolledIds(ids.filter((id) => id !== courseId));
       deskToast("That ledger left your desk. One seat is free again.");
+      paintCourseDoneBar();
       return { selected: false };
     }
     if (ids.length >= 2) {
@@ -273,7 +203,32 @@
     }
     setEnrolledIds(ids.concat(courseId));
     deskToast("Seated. You may keep two courses on this desk at a time.");
+    paintCourseDoneBar(courseId);
     return { selected: true };
+  }
+
+  function paintCourseDoneBar(justSelectedId) {
+    let bar = $("#course-done-bar");
+    const ids = getEnrolledIds();
+    if (!ids.length) {
+      if (bar) bar.remove();
+      document.body.classList.remove("has-done-bar");
+      return;
+    }
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.id = "course-done-bar";
+      document.body.appendChild(bar);
+    }
+    document.body.classList.add("has-done-bar");
+    const focusId = justSelectedId && ids.includes(justSelectedId) ? justSelectedId : ids[ids.length - 1];
+    const course = LMS.courses.find((x) => x.id === focusId);
+    const title = course ? course.title : "your course";
+    bar.innerHTML = `
+      <div class="course-done-inner wrap">
+        <p><strong>Selected:</strong> ${title}${ids.length > 1 ? " · +" + (ids.length - 1) + " more" : ""}</p>
+        <a class="btn btn-navy" href="course.html?id=${encodeURIComponent(focusId)}&start=1">Done</a>
+      </div>`;
   }
 
   function bindCoursePicks(root) {
@@ -756,17 +711,17 @@
           <span class="logo-text">LMS <span>Academy</span></span>
         </a>
         <nav class="nav">
-          <div class="drop">
-            <button type="button"><span data-i18n="explore">Explore</span> <span class="chev">▾</span></button>
-            <div class="mega">
-              <a href="courses.html?cat=basics"><div>Computer Basics<small>Windows, Office, internet</small></div></a>
-              <a href="courses.html?cat=web"><div>Web Development<small>HTML to Next.js</small></div></a>
-              <a href="courses.html?cat=programming"><div>Programming<small>Python, JS, Java</small></div></a>
-              <a href="courses.html?cat=datascience"><div>Data Science<small>SQL to analysis</small></div></a>
-              <a href="courses.html?cat=ai"><div>AI & Machine Learning<small>ML to PyTorch</small></div></a>
-              <a href="courses.html?cat=cloud"><div>Cloud & DevOps<small>AWS, Docker, K8s</small></div></a>
-              <a href="courses.html?cat=security"><div>Cybersecurity<small>Defense and labs</small></div></a>
-              <a href="courses.html?cat=cs"><div>Computer Science<small>DSA & systems</small></div></a>
+          <div class="lang-wrap explore-lang">
+            <button type="button" class="explore-btn" aria-haspopup="true" aria-expanded="false">
+              <span data-i18n="explore">Explore</span>
+            </button>
+            <div class="lang-menu explore-lang-menu">
+              <button type="button" data-lang="en">English</button>
+              <button type="button" data-lang="ur">اردو</button>
+              <button type="button" data-lang="hi">हिन्दी</button>
+              <button type="button" data-lang="zh">中文</button>
+              <button type="button" data-lang="ar">العربية</button>
+              <button type="button" data-lang="ja">日本語</button>
             </div>
           </div>
           <a href="paths.html">Paths</a>
@@ -779,7 +734,6 @@
           </button>
         </form>
         <div class="header-actions">
-        <a class="btn btn-login" href="${currentUser() && activeRecord()?.teachStatus === "approved" ? "instructor-hub.html" : "teach.html"}">Teach</a>
         ${headerAccount()}
         <div class="lang-wrap">
           <button class="globe-btn" type="button" aria-label="Change language" title="Language">
@@ -866,19 +820,26 @@
       btn.addEventListener("click", () => {
         applyLang(btn.dataset.lang);
         $$(".lang-wrap").forEach((w) => w.classList.remove("open"));
+        $$(".explore-btn").forEach((b) => b.setAttribute("aria-expanded", "false"));
       });
     });
-    $$(".globe-btn").forEach((btn) => {
+    $$(".globe-btn, .explore-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         const wrap = btn.closest(".lang-wrap");
-        $$(".lang-wrap").forEach((w) => {
-          if (w !== wrap) w.classList.remove("open");
-        });
-        wrap.classList.toggle("open");
+        const willOpen = !wrap.classList.contains("open");
+        $$(".lang-wrap").forEach((w) => w.classList.remove("open"));
+        $$(".explore-btn").forEach((b) => b.setAttribute("aria-expanded", "false"));
+        if (willOpen) {
+          wrap.classList.add("open");
+          if (btn.classList.contains("explore-btn")) btn.setAttribute("aria-expanded", "true");
+        }
       });
     });
-    document.addEventListener("click", () => $$(".lang-wrap").forEach((w) => w.classList.remove("open")));
+    document.addEventListener("click", () => {
+      $$(".lang-wrap").forEach((w) => w.classList.remove("open"));
+      $$(".explore-btn").forEach((b) => b.setAttribute("aria-expanded", "false"));
+    });
   }
 
   const i18n = {
@@ -1071,11 +1032,13 @@
       const res = toggleSelectCourse(c.id);
       if (res.full) return;
       paintStudentCtas();
+      if (res.selected) paintCourseDoneBar(c.id);
     });
     dropBtn?.addEventListener("click", (e) => {
       e.preventDefault();
       toggleSelectCourse(c.id);
       paintStudentCtas();
+      paintCourseDoneBar();
     });
     $("#enroll-teacher")?.addEventListener("click", (e) => {
       e.preventDefault();
@@ -1083,37 +1046,23 @@
     });
     $("#c-outcomes").innerHTML = c.outcomes.map((o) => `<li>• ${o}</li>`).join("");
     const outline = buildCurriculum(c);
-    const tests = outline.sections.length;
+    const totalMins = outline.sections.reduce(
+      (sum, sec) => sum + sec.lectures.reduce((s, l) => s + l.mins, 0),
+      0
+    );
+    const totalHours = Math.floor(totalMins / 60);
+    const remMins = totalMins % 60;
+    const lengthLabel =
+      totalHours > 0 ? totalHours + "h " + remMins + "m total length" : remMins + "m total length";
     $("#c-curric-meta") &&
       ($("#c-curric-meta").textContent =
-        outline.n + " lectures · a short test after every 7 lectures (" + tests + " tests)");
-    $("#c-lectures").textContent = outline.n + " lectures · " + tests + " short tests";
-    $("#c-curric").innerHTML = outline.sections
-      .map((sec, s) => {
-        const rows = sec.lectures
-          .map(
-            (lec) =>
-              `<button type="button" class="lec-row" data-open="lec" data-num="${lec.num}">
-                <span class="lec-play">▶</span>
-                <span class="lec-title">${lec.num}. ${lec.title}</span>
-                <span class="lec-mins">${lec.mins} min</span>
-              </button>`
-          )
-          .join("");
-        return `<details class="curric-sec" ${s === 0 ? "open" : ""}>
-          <summary>Section ${s + 1} · Lectures ${sec.from}–${sec.to} <em>+ short test</em></summary>
-          <div class="lec-list">
-            ${rows}
-            <button type="button" class="lec-row is-test" data-open="test" data-from="${sec.from}" data-to="${sec.to}">
-              <span class="lec-play">✎</span>
-              <span class="lec-title">${sec.test.title}</span>
-              <span class="lec-mins">5 q</span>
-            </button>
-          </div>
-        </details>`;
-      })
-      .join("");
+        outline.sections.length + " sections · " + outline.n + " lectures · " + lengthLabel);
+    $("#c-lectures").textContent = outline.n + " lectures · " + lengthLabel;
 
+    const PREVIEW_COUNT = 5;
+    const SECTIONS_PREVIEW = 4;
+    let sectionsExpanded = false;
+    let allOpen = false;
     const lessonEl = $("#c-lesson");
     const coverSpan = $("#c-cover span");
     const progressKey = "lms-lec-" + c.id;
@@ -1131,17 +1080,96 @@
       const rec = activeRecord();
       if (rec) persistRecord({ ...rec, progress: { ...rec.progress, [c.id]: p } });
     };
-
     const markRows = () => {
       const p = loadProg();
       $$(".lec-row[data-open=lec]").forEach((row) => {
         row.classList.toggle("is-done", p.done.includes(Number(row.dataset.num)));
       });
-      $$(".lec-row[data-open=test]").forEach((row) => {
-        const k = row.dataset.from + "-" + row.dataset.to;
-        row.classList.toggle("is-done", p.tests[k] != null);
-      });
     };
+
+    const formatSecTime = (sec) => {
+      const m = sec.lectures.reduce((s, l) => s + l.mins, 0);
+      const h = Math.floor(m / 60);
+      const mm = m % 60;
+      return h > 0 ? h + "hr " + mm + "min" : mm + "min";
+    };
+
+    const paintCurric = () => {
+      const visible = sectionsExpanded ? outline.sections : outline.sections.slice(0, SECTIONS_PREVIEW);
+      $("#c-curric").innerHTML = visible
+        .map((sec, s) => {
+          const rows = sec.lectures
+            .map((lec) => {
+              const isPreview = lec.num <= PREVIEW_COUNT;
+              const dur =
+                lec.mins >= 60
+                  ? Math.floor(lec.mins / 60) + ":" + String(lec.mins % 60).padStart(2, "0")
+                  : lec.mins + ":00";
+              return `<button type="button" class="lec-row" data-open="lec" data-num="${lec.num}">
+                <span class="lec-play" aria-hidden="true">▶</span>
+                <span class="lec-title">${lec.title}</span>
+                ${isPreview ? `<span class="lec-preview">Preview</span>` : `<span class="lec-preview-spacer"></span>`}
+                <span class="lec-mins">${dur}</span>
+              </button>`;
+            })
+            .join("");
+          return `<details class="curric-sec" ${s === 0 || allOpen ? "open" : ""}>
+          <summary>
+            <span class="curric-sec-title">Section ${s + 1}: Lectures ${sec.from}–${sec.to}</span>
+            <span class="curric-sec-meta">${sec.lectures.length} lectures · ${formatSecTime(sec)}</span>
+          </summary>
+          <div class="lec-list">
+            ${rows}
+          </div>
+        </details>`;
+        })
+        .join("");
+      markRows();
+      const moreBtn = $("#c-show-sections");
+      const hiddenCount = outline.sections.length - SECTIONS_PREVIEW;
+      if (moreBtn) {
+        if (hiddenCount > 0 && !sectionsExpanded) {
+          moreBtn.hidden = false;
+          moreBtn.textContent = hiddenCount + " more sections";
+        } else if (sectionsExpanded && hiddenCount > 0) {
+          moreBtn.hidden = false;
+          moreBtn.textContent = "Show fewer sections";
+        } else {
+          moreBtn.hidden = true;
+        }
+      }
+    };
+
+    const expandBtn = $("#c-expand-all");
+    expandBtn?.addEventListener("click", () => {
+      allOpen = !allOpen;
+      expandBtn.textContent = allOpen ? "Collapse all sections" : "Expand all sections";
+      $$("#c-curric .curric-sec").forEach((d) => {
+        d.open = allOpen;
+      });
+    });
+    $("#c-show-sections")?.addEventListener("click", () => {
+      sectionsExpanded = !sectionsExpanded;
+      paintCurric();
+    });
+
+    const reqs = [
+      "<b>Motivation:</b> willingness to practice a little every day.",
+      "<b>Computer:</b> a laptop or PC with internet for lectures and exercises.",
+      "<b>Basics:</b> " +
+        (c.level === "Beginner"
+          ? "no prior coding required — start from zero."
+          : "comfort with " + (c.level === "Intermediate" ? "beginner IT skills" : "core programming ideas") + " helps."),
+      "<b>Time:</b> about " + (c.hours || 10) + " hours across the full course."
+    ];
+    $("#c-req-list") && ($("#c-req-list").innerHTML = reqs.map((r) => `<li>${r}</li>`).join(""));
+    $("#c-desc-long") &&
+      ($("#c-desc-long").textContent =
+        c.desc +
+        " This course is built for LMS Academy learners: clear lectures, short checks after every block, and practice you can finish. Work at your own pace, mark lectures complete, and use Study Hub when you want extra drills.");
+
+    paintCurric();
+
 
     const openLecture = (num) => {
       const sec = outline.sections.find((s) => num >= s.from && num <= s.to);
@@ -1156,75 +1184,44 @@
         <p class="muted">${lec.mins} minutes · ${c.instructor} · ${c.level}</p>
         <p>This lecture is part of <strong>${c.title}</strong>. Watch, pause, and try the step on your own machine before you continue.</p>
         <p>${c.desc}</p>
-        <p class="muted">After lecture ${Math.min(num - ((num - 1) % 7) + 6, outline.n)}, a short test will check lectures ${num - ((num - 1) % 7)}–${Math.min(num - ((num - 1) % 7) + 6, outline.n)}.</p>
         <button class="btn btn-teal" type="button" data-mark-lec>Mark lecture complete</button>`;
-      lessonEl.querySelector("[data-mark-lec]").addEventListener("click", () => {
+      const markBtn = lessonEl.querySelector("[data-mark-lec]");
+      const onMark = () => {
         const p = loadProg();
         if (!p.done.includes(num)) p.done.push(num);
         saveProg(p);
         markRows();
-        lessonEl.querySelector("[data-mark-lec]").textContent = "Saved · next lecture";
-      });
-    };
-
-    const openTest = (from, to) => {
-      const qs = makeTestQuestions(c, from, to, outline.titles);
-      $$(".lec-row").forEach((r) =>
-        r.classList.toggle("is-on", r.dataset.open === "test" && r.dataset.from == from && r.dataset.to == to)
-      );
-      if (coverSpan) coverSpan.textContent = "✎ Short test · lectures " + from + "–" + to;
-      lessonEl.hidden = false;
-      lessonEl.innerHTML = `
-        <span class="badge badge-coral">Short test</span>
-        <h3>Lectures ${from}–${to}</h3>
-        <p class="muted">5 questions on the lectures you just finished. No skip — this checks the previous block.</p>
-        <form class="quiz-form">
-          ${qs
-            .map(
-              (item, i) => `<fieldset class="quiz-q">
-                <legend>${i + 1}. ${item.q}</legend>
-                ${item.options
-                  .map(
-                    (opt, oi) =>
-                      `<label><input type="radio" name="q${i}" value="${oi}" required /> ${String(opt)
-                        .replace(/&/g, "&amp;")
-                        .replace(/</g, "&lt;")}</label>`
-                  )
-                  .join("")}
-              </fieldset>`
-            )
-            .join("")}
-          <button class="btn btn-navy" type="submit">Submit test</button>
-        </form>
-        <div class="quiz-result" hidden></div>`;
-      const form = lessonEl.querySelector(".quiz-form");
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        let score = 0;
-        qs.forEach((item, i) => {
-          const picked = form.querySelector(`input[name=q${i}]:checked`);
-          const ok = picked && item.options[Number(picked.value)] === item.answer;
-          if (ok) score++;
-          const fs = form.querySelectorAll("fieldset")[i];
-          fs.classList.add(ok ? "ok" : "bad");
-        });
-        const pct = Math.round((score / qs.length) * 100);
-        const p = loadProg();
-        p.tests[from + "-" + to] = pct;
-        saveProg(p);
-        markRows();
-        const box = lessonEl.querySelector(".quiz-result");
-        box.hidden = false;
-        box.innerHTML = `<p><strong>${score} / ${qs.length}</strong> · ${pct}% on lectures ${from}–${to}.</p>
-          <p class="muted">${pct >= 70 ? "You can continue to the next section." : "Re-watch those 7 lectures, then retry."}</p>`;
-      });
+        markBtn.removeEventListener("click", onMark);
+        const levels = LMS.levels || ["Beginner", "Intermediate", "Advanced", "Expert"];
+        const idx = levels.indexOf(c.level);
+        const nextLevel = idx >= 0 && idx < levels.length - 1 ? levels[idx + 1] : null;
+        if (nextLevel) {
+          markBtn.textContent = "Saved · next level";
+          markBtn.addEventListener(
+            "click",
+            () => {
+              location.href = "courses.html?level=" + encodeURIComponent(nextLevel);
+            },
+            { once: true }
+          );
+        } else {
+          markBtn.textContent = "Saved · browse courses";
+          markBtn.addEventListener(
+            "click",
+            () => {
+              location.href = "courses.html";
+            },
+            { once: true }
+          );
+        }
+      };
+      markBtn.addEventListener("click", onMark);
     };
 
     $("#c-curric").addEventListener("click", (e) => {
       const row = e.target.closest("[data-open]");
       if (!row) return;
       if (row.dataset.open === "lec") openLecture(Number(row.dataset.num));
-      if (row.dataset.open === "test") openTest(Number(row.dataset.from), Number(row.dataset.to));
     });
     markRows();
     openLecture(1);
@@ -1380,6 +1377,17 @@
     const step1 = auth.querySelector('[data-step="1"]');
     const step2 = auth.querySelector('[data-step="2"]');
     const isRegister = !!$("#name");
+
+    $("#pw-toggle")?.addEventListener("click", () => {
+      const btn = $("#pw-toggle");
+      const show = passEl.type === "password";
+      passEl.type = show ? "text" : "password";
+      btn.innerHTML = show
+        ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 3l18 18M10.5 10.6a3 3 0 004 4M9.4 5.1A10.6 10.6 0 0112 5c6.5 0 10 7 10 7a17.4 17.4 0 01-4.2 4.8M6.1 6.1A17.5 17.5 0 002 12s3.5 7 10 7c1.3 0 2.5-.2 3.6-.6"/></svg>`
+        : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`;
+      btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      btn.title = show ? "Hide password" : "Show password";
+    });
 
     const paintEmail = () => {
       const typed = emailEl.value.trim().length > 0;
@@ -1745,15 +1753,6 @@
       })
       .join("")
       : `<p class="muted">Your desk is empty. Pick up to two courses from the catalog.</p><p style="margin-top:10px"><a class="btn btn-navy" href="courses.html">Choose courses</a></p>`;
-    const tIds = getTeachingIds();
-    const teaching = LMS.courses.filter((c) => tIds.includes(c.id));
-    if ($("#dash-teach")) {
-      $("#dash-teach").innerHTML = teaching.length
-        ? teaching
-            .map((c) => `<div class="info-card" style="margin-bottom:12px"><b>${c.title}</b><p class="muted">You are listed as instructor · ${c.students.toLocaleString()} learners on this topic</p></div>`)
-            .join("")
-        : `<p class="muted">No teaching enrollments yet.</p><a class="btn btn-navy" href="teach.html">Teach for free</a>`;
-    }
     }
   }
 
