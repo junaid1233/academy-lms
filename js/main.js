@@ -666,8 +666,8 @@
   function headerAccount() {
     const user = currentUser();
     if (!user) {
-      return `<a class="btn btn-login" href="login.html" data-i18n="login">Log In</a>
-        <a class="btn btn-signup" href="register.html" data-i18n="join">Join for Free</a>`;
+      return `<a class="btn btn-login" href="login.html" data-i18n="login">${t("login")}</a>
+        <a class="btn btn-signup" href="register.html" data-i18n="join">${t("join")}</a>`;
     }
     const rec = activeRecord();
     const name = rec?.name || user.name || "Learner";
@@ -676,12 +676,12 @@
     const avatar = photo
       ? `<img class="user-avatar-img" src="${photo}" alt="">`
       : `<span class="user-avatar">${letter}</span>`;
-    return `<a class="btn btn-login" href="dashboard.html">My learning</a>
-        <a class="user-chip" href="profile.html" title="Account settings">
+    return `<a class="btn btn-login" href="dashboard.html" data-i18n="myLearning">${t("myLearning")}</a>
+        <a class="user-chip" href="profile.html" title="${t("accountSettings")}">
           ${avatar}
           <span>${name}</span>
         </a>
-        <button class="btn-logout" type="button" id="logout-btn">Log out</button>`;
+        <button class="btn-logout" type="button" id="logout-btn">${t("logout")}</button>`;
   }
 
   function mountCatRail() {
@@ -713,7 +713,7 @@
         <nav class="nav">
           <div class="lang-wrap explore-lang">
             <button type="button" class="explore-btn" aria-haspopup="true" aria-expanded="false">
-              <span data-i18n="explore">Explore</span>
+              <span data-i18n="explore">${t("explore")}</span>
             </button>
             <div class="lang-menu explore-lang-menu">
               <button type="button" data-lang="en">English</button>
@@ -724,11 +724,11 @@
               <button type="button" data-lang="ja">日本語</button>
             </div>
           </div>
-          <a href="paths.html">Paths</a>
+          <a href="paths.html" data-i18n="paths">${t("paths")}</a>
         </nav>
         </div>
         <form class="search header-search" data-search-form>
-          <input type="search" placeholder="What do you want to learn?" data-i18n-placeholder="search" />
+          <input type="search" placeholder="${t("search")}" data-i18n-placeholder="search" />
           <button class="search-go" type="submit" aria-label="Search">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
           </button>
@@ -751,6 +751,8 @@
         </div>
       </div>`;
     $("#logout-btn")?.addEventListener("click", async () => {
+      const ok = window.confirm(t("logOutConfirm"));
+      if (!ok) return;
       try {
         await window.lmsSupabase?.auth.signOut();
       } catch (e) {}
@@ -783,7 +785,7 @@
     const html = `
       <div class="foot-explore">
         <div class="wrap">
-          <h3 data-i18n="exploreTitle">LMS Academy courses</h3>
+          <h3 data-i18n="exploreTitle">${t("exploreTitle")}</h3>
           <div class="explore-grid">${columns}</div>
         </div>
       </div>
@@ -816,27 +818,38 @@
   function bindLang() {
     const saved = (activeRecord() && activeRecord().lang) || localStorage.getItem("lms-lang") || "en";
     applyLang(saved);
-    $$("[data-lang]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        applyLang(btn.dataset.lang);
+    if (bindLang._ready) return;
+    bindLang._ready = true;
+
+    document.addEventListener("click", (e) => {
+      const langBtn = e.target.closest("[data-lang]");
+      if (langBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        applyLang(langBtn.getAttribute("data-lang"));
         $$(".lang-wrap").forEach((w) => w.classList.remove("open"));
         $$(".explore-btn").forEach((b) => b.setAttribute("aria-expanded", "false"));
-      });
-    });
-    $$(".globe-btn, .explore-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+        return;
+      }
+
+      const toggle = e.target.closest(".globe-btn, .explore-btn");
+      if (toggle) {
+        e.preventDefault();
         e.stopPropagation();
-        const wrap = btn.closest(".lang-wrap");
+        const wrap = toggle.closest(".lang-wrap");
+        if (!wrap) return;
         const willOpen = !wrap.classList.contains("open");
         $$(".lang-wrap").forEach((w) => w.classList.remove("open"));
         $$(".explore-btn").forEach((b) => b.setAttribute("aria-expanded", "false"));
         if (willOpen) {
           wrap.classList.add("open");
-          if (btn.classList.contains("explore-btn")) btn.setAttribute("aria-expanded", "true");
+          if (toggle.classList.contains("explore-btn")) {
+            toggle.setAttribute("aria-expanded", "true");
+          }
         }
-      });
-    });
-    document.addEventListener("click", () => {
+        return;
+      }
+
       $$(".lang-wrap").forEach((w) => w.classList.remove("open"));
       $$(".explore-btn").forEach((b) => b.setAttribute("aria-expanded", "false"));
     });
@@ -848,44 +861,152 @@
       search: "What do you want to learn?",
       login: "Log In",
       join: "Join for Free",
-      exploreTitle: "LMS Academy courses"
+      exploreTitle: "LMS Academy courses",
+      paths: "Paths",
+      teach: "Teach",
+      myLearning: "My learning",
+      logout: "Log out",
+      courses: "Courses",
+      studyHub: "Study Hub",
+      careerPaths: "Career Paths",
+      certificates: "Certificates",
+      about: "About",
+      dashboard: "Dashboard",
+      home: "Home",
+      accountSettings: "Account settings",
+      continueCourses: "Continue courses",
+      students: "Students",
+      teachers: "Teachers",
+      browseCatalog: "Browse catalog",
+      logOutConfirm: "Log out of LMS Academy?\n\nYou will need to log in again to open your profile and courses."
     },
     ur: {
       explore: "ایکسپلور",
-      search: "کچھ بھی تلاش کریں",
-      login: "لاگ ان",
+      search: "کیا سیکھنا چاہتے ہیں؟",
+      login: "لاگ اِن",
       join: "مفت جوائن",
-      exploreTitle: "LMS Academy کے کورسز"
+      exploreTitle: "LMS Academy کے کورسز",
+      paths: "پاتھس",
+      teach: "پڑھائیں",
+      myLearning: "میری لرننگ",
+      logout: "لاگ آؤٹ",
+      courses: "کورسز",
+      studyHub: "اسٹڈی ہب",
+      careerPaths: "کیریئر پاتھس",
+      certificates: "سرٹیفکیٹس",
+      about: "تعارف",
+      dashboard: "ڈیش بورڈ",
+      home: "ہوم",
+      accountSettings: "اکاؤنٹ سیٹنگز",
+      continueCourses: "کورسز جاری رکھیں",
+      students: "طلبہ",
+      teachers: "اساتذہ",
+      browseCatalog: "کیٹلاگ دیکھیں",
+      logOutConfirm: "LMS Academy سے لاگ آؤٹ کریں؟\n\nپروفائل اور کورسز کے لیے دوبارہ لاگ اِن کرنا ہوگا۔"
     },
     hi: {
       explore: "एक्सप्लोर",
-      search: "कुछ भी खोजें",
+      search: "आप क्या सीखना चाहते हैं?",
       login: "लॉग इन",
-      join: "फ्री जॉइन",
-      exploreTitle: "LMS Academy के कोर्स"
+      join: "मुफ़्त जॉइन",
+      exploreTitle: "LMS Academy के कोर्स",
+      paths: "पाथ्स",
+      teach: "पढ़ाएँ",
+      myLearning: "मेरी लर्निंग",
+      logout: "लॉग आउट",
+      courses: "कोर्स",
+      studyHub: "स्टडी हब",
+      careerPaths: "करियर पाथ",
+      certificates: "प्रमाणपत्र",
+      about: "परिचय",
+      dashboard: "डैशबोर्ड",
+      home: "होम",
+      accountSettings: "अकाउंट सेटिंग्स",
+      continueCourses: "कोर्स जारी रखें",
+      students: "छात्र",
+      teachers: "शिक्षक",
+      browseCatalog: "कैटलॉग देखें",
+      logOutConfirm: "LMS Academy से लॉग आउट करें?\n\nप्रोफ़ाइल और कोर्स के लिए फिर लॉग इन करना होगा।"
     },
     zh: {
       explore: "探索",
-      search: "搜索任何内容",
+      search: "你想学什么？",
       login: "登录",
       join: "免费加入",
-      exploreTitle: "LMS Academy 课程"
+      exploreTitle: "LMS Academy 课程",
+      paths: "路径",
+      teach: "授课",
+      myLearning: "我的学习",
+      logout: "退出",
+      courses: "课程",
+      studyHub: "学习中心",
+      careerPaths: "职业路径",
+      certificates: "证书",
+      about: "关于",
+      dashboard: "仪表板",
+      home: "首页",
+      accountSettings: "账户设置",
+      continueCourses: "继续课程",
+      students: "学生",
+      teachers: "教师",
+      browseCatalog: "浏览目录",
+      logOutConfirm: "退出 LMS Academy？\n\n再次打开资料和课程需要重新登录。"
     },
     ar: {
       explore: "استكشف",
-      search: "ابحث عن أي شيء",
+      search: "ماذا تريد أن تتعلم؟",
       login: "تسجيل الدخول",
       join: "انضم مجانًا",
-      exploreTitle: "دورات LMS Academy"
+      exploreTitle: "دورات LMS Academy",
+      paths: "المسارات",
+      teach: "درّس",
+      myLearning: "تعلّمي",
+      logout: "خروج",
+      courses: "الدورات",
+      studyHub: "مركز الدراسة",
+      careerPaths: "مسارات مهنية",
+      certificates: "الشهادات",
+      about: "حول",
+      dashboard: "لوحة التحكم",
+      home: "الرئيسية",
+      accountSettings: "إعدادات الحساب",
+      continueCourses: "متابعة الدورات",
+      students: "الطلاب",
+      teachers: "المعلمون",
+      browseCatalog: "تصفح الكتالوج",
+      logOutConfirm: "تسجيل الخروج من LMS Academy؟\n\nستحتاج لتسجيل الدخول مجددًا لملفك والدورات."
     },
     ja: {
       explore: "探索",
-      search: "何でも検索",
+      search: "何を学びたいですか？",
       login: "ログイン",
       join: "無料で参加",
-      exploreTitle: "LMS Academyのコース"
+      exploreTitle: "LMS Academyのコース",
+      paths: "パス",
+      teach: "教える",
+      myLearning: "マイラーニング",
+      logout: "ログアウト",
+      courses: "コース",
+      studyHub: "スタディハブ",
+      careerPaths: "キャリアパス",
+      certificates: "証明書",
+      about: "について",
+      dashboard: "ダッシュボード",
+      home: "ホーム",
+      accountSettings: "アカウント設定",
+      continueCourses: "コースを続ける",
+      students: "学生",
+      teachers: "教師",
+      browseCatalog: "カタログを見る",
+      logOutConfirm: "LMS Academyからログアウトしますか？\n\nプロフィールとコースには再ログインが必要です。"
     }
   };
+
+  function t(key) {
+    const code = localStorage.getItem("lms-lang") || "en";
+    const pack = i18n[code] || i18n.en;
+    return pack[key] || i18n.en[key] || key;
+  }
 
   function applyLang(code) {
     localStorage.setItem("lms-lang", code);
@@ -894,6 +1015,7 @@
     const names = { en: "English", ur: "اردو", hi: "हिन्दी", zh: "中文", ar: "العربية", ja: "日本語" };
     document.documentElement.lang = code;
     document.documentElement.dir = code === "ur" || code === "ar" ? "rtl" : "ltr";
+    document.body.setAttribute("data-lang", code);
     $$(".lang-label").forEach((el) => {
       el.textContent = names[code] || "English";
     });
@@ -906,6 +1028,17 @@
       const key = el.getAttribute("data-i18n-placeholder");
       if (pack[key]) el.placeholder = pack[key];
     });
+    // Remount chrome so header/footer buttons use new language
+    if (!applyLang._remounting) {
+      applyLang._remounting = true;
+      try {
+        mountHeader();
+        mountFooter();
+      } finally {
+        applyLang._remounting = false;
+      }
+    }
+    if (typeof window.lmsApplyChatLang === "function") window.lmsApplyChatLang();
   }
 
   mountHeader();
