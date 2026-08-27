@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/register", "destination": "/register.html" },
+    { "source": "/courses", "destination": "/courses.html" },
+    { "source": "/course", "destination": "/course.html" },
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/certifications", "destination": "/certifications.html" },
+    { "source": "/instructor", "destination": "/instructor.html" },
+    { "source": "/profile", "destination": "/profile.html" },
+    { "source": "/study", "destination": "/study.html" },
+    { "source": "/teacher", "destination": "/teacher.html" },
+    { "source": "/topic", "destination": "/topic.html" }
+  ]
+}
