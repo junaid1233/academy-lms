@@ -1,14 +1,16 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const url = import.meta.env.VITE_SUPABASE_URL;
-const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+// Safely access environment variables, falling back to credentials when running directly in the browser on GitHub Pages
+const env = (typeof import.meta !== "undefined" && import.meta.env) || {};
+const url = env.VITE_SUPABASE_URL || "https://kvabjueeywumbufbrkzr.supabase.co";
+const key = env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_oiWIwYuE3-_jcKpTuPKopQ_B4ZY2CEg";
 
-window.lmsSupabaseUrl = url || "";
-window.lmsSupabaseKey = key || "";
+window.lmsSupabaseUrl = url;
+window.lmsSupabaseKey = key;
 
 if (!url || !key) {
   console.error(
-    "Supabase: missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY in .env.local"
+    "Supabase: missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY"
   );
   window.lmsSupabase = null;
 } else {
