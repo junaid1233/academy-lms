@@ -422,154 +422,8 @@
               courseId: rec.teachProfile.courseId || ""
             }
           : { headline: "", bio: "", courseId: "" },
-      teacherCourses: Array.isArray(rec.teacherCourses)
-        ? rec.teacherCourses.map((c) => ({
-            id: c.id || "tc-" + Math.random().toString(36).slice(2, 9),
-            requestId: c.requestId || "",
-            title: c.title || "",
-            level: c.level || "Beginner",
-            desc: c.desc || "",
-            status: c.status === "approved" || c.status === "rejected" ? c.status : "pending"
-          }))
-        : [],
       updatedAt: rec.updatedAt || new Date().toISOString()
     };
-  }
-
-  const ADMIN_EMAIL = "campus.steward@lmsacademy.org";
-  const ADMIN_DEFAULT_PASS = "Admin@123!";
-
-  function getTeachRequests() {
-    try {
-      return JSON.parse(localStorage.getItem("lms-teach-requests") || "[]");
-    } catch (e) {
-      return [];
-    }
-  }
-
-  function saveTeachRequests(list) {
-    localStorage.setItem("lms-teach-requests", JSON.stringify(list));
-  }
-
-  function pendingTeachCount() {
-    return getTeachRequests().filter((r) => r.status === "pending").length;
-  }
-
-  function submitTeachRequest(rec, payload) {
-    const req = {
-      id: "req-" + Date.now(),
-      teacherEmail: rec.email,
-      teacherName: rec.name,
-      teacherId: rec.id,
-      headline: payload.headline,
-      bio: payload.bio,
-      courseTitle: payload.courseTitle,
-      courseLevel: payload.courseLevel,
-      courseDesc: payload.courseDesc,
-      message:
-        "I want to teach on LMS Academy and offer this course: " +
-        payload.courseTitle +
-        " (" +
-        payload.courseLevel +
-        ").",
-      status: "pending",
-      createdAt: new Date().toISOString()
-    };
-    const requests = getTeachRequests();
-    requests.unshift(req);
-    saveTeachRequests(requests);
-
-    const courseEntry = {
-      id: "tc-" + Date.now(),
-      requestId: req.id,
-      title: payload.courseTitle,
-      level: payload.courseLevel,
-      desc: payload.courseDesc,
-      status: "pending"
-    };
-    const teacherCourses = (rec.teacherCourses || []).slice();
-    teacherCourses.push(courseEntry);
-
-    persistRecord({
-      ...rec,
-      role: rec.role === "admin" ? "admin" : rec.role === "student" ? "teacher" : rec.role,
-      teachStatus: rec.teachStatus === "approved" ? "approved" : "pending",
-      teachProfile: { headline: payload.headline, bio: payload.bio, courseId: courseEntry.id },
-      teacherCourses
-    });
-    return req;
-  }
-
-  function reviewTeachRequest(reqId, approved) {
-    const requests = getTeachRequests();
-    const req = requests.find((r) => r.id === reqId);
-    if (!req) return null;
-    req.status = approved ? "approved" : "rejected";
-    req.reviewedAt = new Date().toISOString();
-    saveTeachRequests(requests);
-
-    const rec = loadRecord(req.teacherEmail);
-    if (rec) {
-      const teacherCourses = (rec.teacherCourses || []).map((c) =>
-        c.requestId === reqId ? { ...c, status: approved ? "approved" : "rejected" } : c
-      );
-      const anyApproved = teacherCourses.some((c) => c.status === "approved");
-      persistRecord({
-        ...rec,
-        teachStatus: anyApproved ? "approved" : approved ? "approved" : "pending",
-        role: approved
-          ? rec.role === "student"
-            ? "both"
-            : rec.role === "teacher"
-              ? "teacher"
-              : rec.role === "both"
-                ? "both"
-                : rec.role
-          : rec.role,
-        teacherCourses,
-        teachProfile: {
-          headline: req.headline,
-          bio: req.bio,
-          courseId: teacherCourses.find((c) => c.requestId === reqId)?.id || rec.teachProfile?.courseId || ""
-        }
-      });
-    }
-    return req;
-  }
-
-  function ensureAdminAccount() {
-    const accounts = getAccounts();
-    if (accounts.some((a) => a.email === ADMIN_EMAIL)) return;
-    const adminRec = normalizeRecord({
-      id: "admin-campus",
-      name: "Campus Admin",
-      email: ADMIN_EMAIL,
-      role: "admin",
-      enrolled: [],
-      teaching: [],
-      teacherCourses: []
-    });
-    accounts.push({
-      id: adminRec.id,
-      name: adminRec.name,
-      email: ADMIN_EMAIL,
-      password: ADMIN_DEFAULT_PASS,
-      role: "admin"
-    });
-    saveAccounts(accounts);
-    localStorage.setItem("lms-data:" + ADMIN_EMAIL, JSON.stringify(adminRec));
-  }
-
-  function approvedTeacherCourses(rec) {
-    return (rec?.teacherCourses || []).filter((c) => c.status === "approved");
-  }
-
-  function isAdminUser(user) {
-    const u = user || currentUser();
-    if (!u) return false;
-    if (u.role === "admin" || u.email === ADMIN_EMAIL) return true;
-    const rec = loadRecord(u.email);
-    return rec?.role === "admin" || rec?.email === ADMIN_EMAIL;
   }
 
   function loadRecord(email) {
@@ -822,18 +676,8 @@
     const avatar = photo
       ? `<img class="user-avatar-img" src="${photo}" alt="">`
       : `<span class="user-avatar">${letter}</span>`;
-<<<<<<< Updated upstream
     return `<a class="btn btn-login" href="dashboard.html" data-i18n="myLearning">${t("myLearning")}</a>
         <a class="user-chip" href="profile.html" title="${t("accountSettings")}">
-=======
-    const adminLink = isAdminUser(user)
-      ? `<a class="btn btn-login" href="admin.html">Admin${pendingTeachCount() ? " (" + pendingTeachCount() + ")" : ""}</a>`
-      : "";
-    return `<a class="btn btn-login" href="teach.html">Teach</a>
-        <a class="btn btn-login" href="dashboard.html">My learning</a>
-        ${adminLink}
-        <a class="user-chip" href="profile.html" title="Account settings">
->>>>>>> Stashed changes
           ${avatar}
           <span>${name}</span>
         </a>
@@ -880,12 +724,7 @@
               <button type="button" data-lang="ja">日本語</button>
             </div>
           </div>
-<<<<<<< Updated upstream
           <a href="paths.html" data-i18n="paths">${t("paths")}</a>
-=======
-          <a href="paths.html">Paths</a>
-          <a href="teach.html">Teach</a>
->>>>>>> Stashed changes
         </nav>
         </div>
         <form class="search header-search" data-search-form>
@@ -912,12 +751,8 @@
         </div>
       </div>`;
     $("#logout-btn")?.addEventListener("click", async () => {
-<<<<<<< Updated upstream
       const ok = window.confirm(t("logOutConfirm"));
       if (!ok) return;
-=======
-      if (!confirm("Log out of LMS Academy?")) return;
->>>>>>> Stashed changes
       try {
         await window.lmsSupabase?.auth.signOut();
       } catch (e) {}
@@ -1206,11 +1041,9 @@
     if (typeof window.lmsApplyChatLang === "function") window.lmsApplyChatLang();
   }
 
-  ensureAdminAccount();
   mountHeader();
   mountFooter();
   bindLang();
-  if (currentUser()) paintCourseDoneBar();
 
   const menuBtn = $("#menu-toggle");
   const mobile = $("#mobile-nav");
@@ -1781,7 +1614,6 @@
         saveAccounts(accounts);
         await cloudRegister({ name, email, password, role, rec });
       } else {
-        ensureAdminAccount();
         let rec = await cloudLogin(email, password);
         if (!rec) {
           const found = accounts.find((a) => a.email === email && a.password === password);
@@ -1800,95 +1632,139 @@
       const course = q.get("course");
       const session = currentUser();
       if (course) saveEnroll(session.role, course);
-      else if (isAdminUser(session)) location.href = "admin.html";
       else location.href = "profile.html";
     });
   }
 
   if ($("#teach-form")) {
-    ensureAdminAccount();
+    const ADMIN_EMAIL = "campus.steward@lmsacademy.org";
     let user = currentUser();
     if (!user) {
       location.href = "login.html?role=teacher";
     } else {
       const rec = activeRecord() || persistRecord(normalizeRecord(user));
+      const preset = q.get("course") || rec.teachProfile.courseId || rec.enrolled[0] || LMS.courses[0].id;
+      const sel = $("#teach-course");
+      sel.innerHTML = LMS.courses
+        .map((c) => {
+          const hold = rec.enrolled.includes(c.id) ? " · on your desk" : "";
+          return `<option value="${c.id}"${c.id === preset ? " selected" : ""}>${c.title} (${c.level})${hold}</option>`;
+        })
+        .join("");
       $("#teach-headline").value = rec.teachProfile.headline || "";
       $("#teach-bio").value = rec.teachProfile.bio || "";
-      const pendingCourse = (rec.teacherCourses || []).find((c) => c.status === "pending");
-      const approvedCourse = (rec.teacherCourses || []).find((c) => c.status === "approved");
-      const seed = pendingCourse || approvedCourse;
-      if (seed) {
-        $("#teach-course-title").value = seed.title || "";
-        $("#teach-course-level").value = seed.level || "Beginner";
-        $("#teach-course-desc").value = seed.desc || "";
-      }
       const statusEl = $("#teach-status");
+      const unlockBtn = $("#teach-unlock");
+      const holdHint = $("#teach-hold-hint");
+      const paintHold = () => {
+        const id = sel.value;
+        const holds = activeRecord().enrolled.includes(id);
+        holdHint.style.display = "block";
+        holdHint.className = "field-hint is-on";
+        holdHint.textContent = holds
+          ? "You already hold this ledger. After permission you can teach it."
+          : "This course is not on your desk yet. Seat it as a student first (max two), then ask to teach.";
+      };
       const paintStatus = () => {
         const live = activeRecord();
         statusEl.hidden = live.teachStatus === "none";
         statusEl.className = "teach-banner is-" + live.teachStatus;
         if (live.teachStatus === "pending") {
-          statusEl.textContent =
-            "Permission request is with the campus admin. Teaching stays locked until they approve. Check your email notification was sent.";
+          statusEl.textContent = "Permission letter is with the steward. Teaching stays locked until they reply.";
+          unlockBtn.style.display = "";
         } else if (live.teachStatus === "approved") {
-          statusEl.textContent =
-            "Admin approved you. Offer another course below, or open the instructor hub to manage approved courses.";
-          $("#teach-ask").textContent = "Request another course";
+          statusEl.textContent = "The steward opened the door. You may teach courses you hold.";
+          unlockBtn.style.display = "none";
+          $("#teach-ask").textContent = "Add this course to my teaching";
         }
       };
+      paintHold();
       paintStatus();
+      sel.addEventListener("change", paintHold);
 
       $("#teach-form").addEventListener("submit", (e) => {
         e.preventDefault();
         const live = activeRecord();
+        const courseId = sel.value;
         const headline = ($("#teach-headline").value || "").trim();
         const bio = ($("#teach-bio").value || "").trim();
-        const courseTitle = ($("#teach-course-title").value || "").trim();
-        const courseLevel = ($("#teach-course-level").value || "Beginner").trim();
-        const courseDesc = ($("#teach-course-desc").value || "").trim();
         if (headline.length < 3 || bio.length < 12) {
           deskToast("Write a headline and a short about-you before the steward will read it.");
           return;
         }
-        if (courseTitle.length < 3 || courseDesc.length < 12) {
-          deskToast("Describe the course you want to offer (title + short description).");
+        persistRecord({
+          ...live,
+          teachProfile: { headline, bio, courseId }
+        });
+        const holds = live.enrolled.includes(courseId);
+        const course = LMS.courses.find((c) => c.id === courseId);
+        if (live.teachStatus === "approved") {
+          if (!holds) {
+            deskToast("Seat this course on your desk first, then you can teach it.");
+            return;
+          }
+          const list = live.teaching.slice();
+          if (!list.includes(courseId)) list.push(courseId);
+          persistRecord({
+            ...activeRecord(),
+            role: live.role === "student" ? "both" : live.role === "teacher" ? "teacher" : "both",
+            teaching: list,
+            teachProfile: { headline, bio, courseId }
+          });
+          deskToast("This ledger is now on your teaching desk.");
+          location.href = "instructor-hub.html";
           return;
         }
-        const req = submitTeachRequest(live, {
-          headline,
-          bio,
-          courseTitle,
-          courseLevel,
-          courseDesc
-        });
         const body = [
           "A teacher asks for permission to teach on LMS Academy.",
-          "",
-          "I want to teach here and offer my own course.",
           "",
           "Name: " + live.name,
           "Email: " + live.email,
           "Campus ID: " + live.id,
           "Headline: " + headline,
-          "Course title: " + courseTitle,
-          "Level: " + courseLevel,
-          "Course description: " + courseDesc,
+          "Course: " + (course ? course.title : courseId),
+          "Already holds course: " + (holds ? "yes" : "no"),
           "",
-          "About the teacher:",
-          bio,
-          "",
-          "Request ID: " + req.id,
-          "Review in admin.html after login as campus steward."
+          "About:",
+          bio
         ].join("\n");
-        deskToast("Request saved. Opening email to notify admin…");
-        paintStatus();
+        persistRecord({
+          ...activeRecord(),
+          teachStatus: "pending",
+          teachProfile: { headline, bio, courseId }
+        });
         location.href =
           "mailto:" +
           ADMIN_EMAIL +
           "?subject=" +
-          encodeURIComponent("Teach permission — " + live.name + " · " + courseTitle) +
+          encodeURIComponent("Teach permission — " + live.name) +
           "&body=" +
           encodeURIComponent(body);
+        paintStatus();
+      });
+
+      unlockBtn.addEventListener("click", () => {
+        const live = activeRecord();
+        const courseId = sel.value;
+        if (!live.enrolled.includes(courseId)) {
+          deskToast("Hold the course on your student desk before teaching it.");
+          return;
+        }
+        const list = live.teaching.slice();
+        if (!list.includes(courseId)) list.push(courseId);
+        persistRecord({
+          ...live,
+          teachStatus: "approved",
+          role: live.role === "student" ? "both" : "teacher",
+          teaching: list,
+          teachProfile: {
+            headline: ($("#teach-headline").value || "").trim(),
+            bio: ($("#teach-bio").value || "").trim(),
+            courseId
+          }
+        });
+        deskToast("Permission sealed. You may teach.");
+        location.href = "instructor-hub.html";
       });
     }
   }
@@ -1899,35 +1775,38 @@
       location.href = "login.html?role=teacher";
     } else {
       const rec = activeRecord() || persistRecord(normalizeRecord(user));
-      const teaching = approvedTeacherCourses(rec);
+      const teaching = LMS.courses.filter((c) => rec.teaching.includes(c.id));
+      const learners = teaching.reduce((n, c) => n + (c.students || 0), 0);
       const letter = (rec.name || "T").trim().charAt(0).toUpperCase();
       const panel = (id) => {
         if (rec.teachStatus !== "approved") {
           return `<div class="info-card">
             <h2 class="serif" style="font-size:28px;color:var(--navy)">Instructor hub is locked</h2>
-            <p class="muted" style="margin:10px 0 16px">Offer your own course on the Teach page, then wait for admin permission. Status: <b>${rec.teachStatus === "pending" ? "waiting on admin" : "not requested"}</b>.</p>
-            <a class="btn btn-coral" href="teach.html#apply">Ask to teach</a>
+            <p class="muted" style="margin:10px 0 16px">This campus is free — still, the steward must grant permission before you teach. Status: <b>${rec.teachStatus === "pending" ? "waiting on steward" : "not requested"}</b>.</p>
+            <a class="btn btn-coral" href="teach.html#apply">Ask to teach for free</a>
           </div>`;
         }
         if (id === "courses") {
           return `<h2 class="serif" style="font-size:28px;color:var(--navy);margin-bottom:8px">Your courses</h2>
-            <p class="muted" style="margin-bottom:16px">Courses you authored and admin approved — not built-in catalog picks.</p>
+            <p class="muted" style="margin-bottom:16px">Free to host. You may teach ledgers you already hold.</p>
             ${
               teaching.length
                 ? teaching
-                    .map(
-                      (c) => `<article class="hub-course">
+                    .map((c) => {
+                      const img = courseImg(c);
+                      return `<article class="hub-course">
+                        ${img ? `<img src="${img}" alt="">` : ""}
                         <div>
                           <b>${c.title}</b>
-                          <p class="muted">${c.level} · $0 · approved</p>
-                          <p style="margin-top:8px">${c.desc || ""}</p>
+                          <p class="muted">${c.level} · ${c.students.toLocaleString()} learners on this topic · $0</p>
+                          <a class="btn btn-navy" href="course.html?id=${c.id}">Open room</a>
                         </div>
-                      </article>`
-                    )
+                      </article>`;
+                    })
                     .join("")
-                : `<p class="muted">No approved teaching courses yet.</p>`
+                : `<p class="muted">No teaching courses yet.</p>`
             }
-            <p style="margin-top:16px"><a class="btn btn-ghost" href="teach.html#apply">Offer another course</a></p>`;
+            <p style="margin-top:16px"><a class="btn btn-ghost" href="teach.html#apply">Add a course you hold</a></p>`;
         }
         if (id === "profile") {
           return `<h2 class="serif" style="font-size:28px;color:var(--navy);margin-bottom:8px">Public profile</h2>
@@ -1936,16 +1815,16 @@
               <p><strong>Name:</strong> ${rec.name}</p>
               <p><strong>Headline:</strong> ${rec.teachProfile.headline || "—"}</p>
               <p style="margin-top:10px">${rec.teachProfile.bio || ""}</p>
-              <p style="margin-top:16px"><a class="btn btn-navy" href="teach.html#apply">Edit profile / add course</a></p>
+              <p style="margin-top:16px"><a class="btn btn-navy" href="teach.html#apply">Edit profile</a></p>
             </div>`;
         }
         return `<h2 class="serif" style="font-size:28px;color:var(--navy);margin-bottom:6px">Welcome, ${rec.name.split(" ")[0] || "guide"}</h2>
-          <p class="muted" style="margin-bottom:20px">Instructor hub · your own courses · everything stays free.</p>
+          <p class="muted" style="margin-bottom:20px">Instructor hub · everything on this campus stays free.</p>
           <div class="teach-stats">
-            <div><b>${teaching.length}</b><span>Courses you offer</span></div>
+            <div><b>${teaching.length}</b><span>Courses you guide</span></div>
+            <div><b>${learners.toLocaleString()}</b><span>Learners on those topics</span></div>
             <div><b>$0</b><span>Price for every seat</span></div>
-            <div><b>Open</b><span>Admin permission</span></div>
-            <div><b>${(rec.teacherCourses || []).filter((c) => c.status === "pending").length}</b><span>Pending requests</span></div>
+            <div><b>Open</b><span>Steward permission</span></div>
           </div>
           <div class="info-card" style="margin-top:18px">
             <h3>${rec.teachProfile.headline || "Instructor"}</h3>
@@ -1978,102 +1857,6 @@
         });
       });
       paint("overview");
-    }
-  }
-
-  if ($("#admin-root")) {
-    ensureAdminAccount();
-    const user = currentUser();
-    if (!user) {
-      location.href = "login.html";
-    } else if (!isAdminUser(user)) {
-      $("#admin-panel").innerHTML = `<div class="info-card">
-        <h2 class="serif" style="font-size:26px;color:var(--navy)">Admin only</h2>
-        <p class="muted" style="margin:10px 0 16px">Log in as the campus steward to review teach requests.</p>
-        <p class="muted" style="font-size:13px">Demo steward: <b>${ADMIN_EMAIL}</b> / <b>${ADMIN_DEFAULT_PASS}</b></p>
-        <p style="margin-top:14px"><a class="btn btn-navy" href="login.html">Log in</a></p>
-      </div>`;
-    } else {
-      const paintAdmin = () => {
-        const list = getTeachRequests();
-        const pending = list.filter((r) => r.status === "pending");
-        const past = list.filter((r) => r.status !== "pending");
-        $("#admin-panel").innerHTML = `
-          <div class="admin-summary teach-stats" style="margin-bottom:22px">
-            <div><b>${pending.length}</b><span>Pending notifications</span></div>
-            <div><b>${past.filter((r) => r.status === "approved").length}</b><span>Approved</span></div>
-            <div><b>${past.filter((r) => r.status === "rejected").length}</b><span>Rejected</span></div>
-            <div><b>${list.length}</b><span>Total requests</span></div>
-          </div>
-          <h2 class="serif" style="font-size:24px;color:var(--navy);margin-bottom:12px">Teach permission inbox</h2>
-          ${
-            pending.length
-              ? pending
-                  .map(
-                    (r) => `<article class="info-card admin-req" style="margin-bottom:14px">
-                      <span class="desk-slot-kicker">New request · ${new Date(r.createdAt).toLocaleString()}</span>
-                      <h3 style="margin:8px 0 4px">${r.teacherName}</h3>
-                      <p class="muted">${r.teacherEmail} · ID ${r.teacherId}</p>
-                      <p style="margin-top:10px"><strong>Headline:</strong> ${r.headline}</p>
-                      <p><strong>Course:</strong> ${r.courseTitle} (${r.courseLevel})</p>
-                      <p class="muted" style="margin-top:8px">${r.courseDesc}</p>
-                      <p style="margin-top:8px">${r.bio}</p>
-                      <p class="muted" style="margin-top:8px;font-style:italic">${r.message}</p>
-                      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-                        <button type="button" class="btn btn-teal" data-approve="${r.id}">Approve &amp; allow teaching</button>
-                        <button type="button" class="btn btn-ghost" data-reject="${r.id}">Reject</button>
-                        <a class="btn btn-navy" href="mailto:${encodeURIComponent(r.teacherEmail)}?subject=${encodeURIComponent("LMS Academy teach permission")}&body=${encodeURIComponent("Hello " + r.teacherName + ",\\n\\nRegarding your request to teach “" + r.courseTitle + "”.\\n\\n— Campus Admin")}">Email teacher</a>
-                      </div>
-                    </article>`
-                  )
-                  .join("")
-              : `<p class="muted">No pending teach requests right now.</p>`
-          }
-          ${
-            past.length
-              ? `<h3 class="serif" style="font-size:20px;color:var(--navy);margin:28px 0 12px">History</h3>` +
-                past
-                  .slice(0, 20)
-                  .map(
-                    (r) => `<div class="info-card" style="margin-bottom:10px">
-                      <b>${r.teacherName}</b> · ${r.courseTitle}
-                      <span class="muted"> — ${r.status}</span>
-                    </div>`
-                  )
-                  .join("")
-              : ""
-          }`;
-        $$("[data-approve]").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const req = reviewTeachRequest(btn.getAttribute("data-approve"), true);
-            if (req) {
-              deskToast("Approved — " + req.teacherName + " may teach.");
-              location.href =
-                "mailto:" +
-                encodeURIComponent(req.teacherEmail) +
-                "?subject=" +
-                encodeURIComponent("Approved — teach on LMS Academy") +
-                "&body=" +
-                encodeURIComponent(
-                  "Hello " +
-                    req.teacherName +
-                    ",\n\nYour request to teach “" +
-                    req.courseTitle +
-                    "” was approved. Open instructor-hub.html to continue.\n\n— Campus Admin"
-                );
-            }
-            paintAdmin();
-          });
-        });
-        $$("[data-reject]").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const req = reviewTeachRequest(btn.getAttribute("data-reject"), false);
-            if (req) deskToast("Rejected — " + req.teacherName);
-            paintAdmin();
-          });
-        });
-      };
-      paintAdmin();
     }
   }
 
@@ -2672,21 +2455,17 @@
 
   mountLearnerHome();
 
-  ensureAdminAccount();
-  if (currentUser()) paintCourseDoneBar();
 
   window.addEventListener("lms-ready", () => {
     cloudHydrate().then(() => {
       const rec = activeRecord();
       if (rec) cloudSave(rec);
-      if (currentUser()) paintCourseDoneBar();
     });
   });
   if (window.lmsSupabase) {
     cloudHydrate().then(() => {
       const rec = activeRecord();
       if (rec) cloudSave(rec);
-      if (currentUser()) paintCourseDoneBar();
     });
   }
 })();
