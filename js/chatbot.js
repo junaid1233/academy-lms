@@ -1055,7 +1055,7 @@
           <div class="lms-chat-msg bot">${ui.hi}</div>
         </div>
         <form class="lms-chat-form" id="lms-chat-form">
-          <input id="lms-chat-input" type="text" placeholder="${ui.ph}" autocomplete="off" enterkeyhint="send" />
+          <input id="lms-chat-input" name="message" type="text" placeholder="${ui.ph}" autocomplete="off" enterkeyhint="send" />
           <button class="lms-chat-send" type="submit" aria-label="Send message" title="Send">${SEND_ICON}</button>
         </form>
       </div>

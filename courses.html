@@ -37,7 +37,7 @@
       </nav>
       <form class="search" data-search-form>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
-        <input type="search" placeholder="Search the catalog…" />
+        <input type="search" name="q" placeholder="Search the catalog…" />
       </form>
       <div class="header-actions">
         <a class="btn btn-ghost" href="login.html">Log in</a>
@@ -79,13 +79,13 @@
       <label><input type="radio" name="cat" value="math" /> Math for IT</label>
       <label><input type="radio" name="cat" value="design" /> UI/UX</label>
       <label><input type="radio" name="cat" value="career" /> Career skills</label>
-      <input type="hidden" id="f-cat" value="all" />
-      <input type="hidden" id="f-level" value="all" />
+      <input type="hidden" id="f-cat" name="f-cat" value="all" />
+      <input type="hidden" id="f-level" name="f-level" value="all" />
     </aside>
     <div>
       <div class="toolbar">
         <strong id="count">0 courses</strong>
-        <input id="catalog-q" type="search" placeholder="Filter this list…" style="height:42px;border:1px solid var(--line);border-radius:999px;padding:0 14px;background:#fff;max-width:240px" />
+        <input id="catalog-q" name="catalog_q" type="search" placeholder="Filter this list…" style="height:42px;border:1px solid var(--line);border-radius:999px;padding:0 14px;background:#fff;max-width:240px" />
       </div>
       <div class="grid-3" id="catalog"></div>
     </div>

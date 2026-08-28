@@ -728,7 +728,7 @@
         </nav>
         </div>
         <form class="search header-search" data-search-form>
-          <input type="search" placeholder="${t("search")}" data-i18n-placeholder="search" />
+          <input type="search" name="q" id="header-q" placeholder="${t("search")}" data-i18n-placeholder="search" />
           <button class="search-go" type="submit" aria-label="Search">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
           </button>
@@ -2030,7 +2030,7 @@
                 <div>
                   <p class="muted" style="margin-bottom:12px">JPG or PNG, kept on this device (and synced to your account metadata when signed in).</p>
                   <label class="btn btn-navy acct-file-btn">Upload photo
-                    <input id="acct-photo-input" type="file" accept="image/*" hidden />
+                    <input id="acct-photo-input" name="photo" type="file" accept="image/*" hidden />
                   </label>
                   ${p.photo ? `<button type="button" class="btn btn-ghost" id="acct-photo-clear">Remove</button>` : ""}
                 </div>
@@ -2075,7 +2075,7 @@
               </header>
               <form class="acct-form" id="acct-security-form">
                 <label>Email
-                  <input type="email" value="${rec.email}" readonly />
+                  <input id="acct-email" name="email" type="email" value="${rec.email}" readonly />
                   <span class="acct-hint">Email cannot be changed here.</span>
                 </label>
                 <label>Current password<input name="current" type="password" autocomplete="current-password" required /></label>
