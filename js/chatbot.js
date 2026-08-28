@@ -253,7 +253,7 @@
     register:
       "Join free (register.html): enter name, a complete email (name@domain.com), and a strong password. Role is student by default. After join you are logged in and can open Courses / Profile / Dashboard.",
     password:
-      "Password must have: 8+ characters, lowercase, uppercase, a number, and a symbol (e.g. !@#). Eye icon shows/hides the password while typing.",
+      "Password must have: 8+ characters, lowercase, uppercase, a number, and a symbol (e.g. !@#). Eye icon shows/hides the password while typing. Forgot it? Open Log in → Forgot password: enter your email, use the 6-digit campus reset code, then create and confirm a new password.",
     learn:
       "Flow: Courses → pick level or category → Select for desk (max 2) → Done opens the course → mark lectures complete → practice in Study Hub. Logged-in home focuses on learning; marketing blocks hide. Dashboard = Continue your courses.",
     desk:
@@ -305,7 +305,7 @@
       register:
         "Join free: name, poora email (name@domain.com), strong password. Baad mein Courses / Profile / Dashboard kholo.",
       password:
-        "Password: 8+ letters, choti + bari letter, number, symbol (!@#). Eye icon se show/hide.",
+        "Password: 8+ letters, choti + bari letter, number, symbol (!@#). Bhool gaye? Login → Forgot password: email, 6-digit code, phir naya password banao.",
       learn:
         "Courses → level/category → Select for desk (max 2) → Done se course → lectures complete → Study Hub practice. Dashboard = Continue.",
       desk:
@@ -1044,7 +1044,7 @@
     root.innerHTML = `
       <div class="lms-chat-panel" id="lms-chat-panel" hidden aria-hidden="true">
         <header class="lms-chat-head">
-          <img src="assets/chatbot-robot.svg" alt="" width="40" height="40" />
+          <img src="assets/chatbot-robot.png" alt="" width="36" height="36" />
           <div>
             <strong>${ui.title}</strong>
             <span>${ui.sub}</span>
@@ -1060,7 +1060,7 @@
         </form>
       </div>
       <button type="button" class="lms-chat-fab" id="lms-chat-fab" aria-label="Open Campus Bot" aria-expanded="false">
-        <img src="assets/chatbot-robot.svg" alt="" width="52" height="52" />
+        <img src="assets/chatbot-robot.png" alt="" width="50" height="50" />
       </button>`;
     document.body.appendChild(root);
 

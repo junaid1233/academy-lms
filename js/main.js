@@ -663,6 +663,45 @@
     return passwordGaps(value).length === 0;
   }
 
+  function showAuthToast(msg) {
+    let el = $("#lms-auth-toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "lms-auth-toast";
+      el.className = "lms-auth-toast";
+      el.setAttribute("role", "alert");
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.classList.add("is-on");
+    clearTimeout(showAuthToast._t);
+    showAuthToast._t = setTimeout(() => el.classList.remove("is-on"), 4500);
+  }
+
+  function makeResetCode() {
+    return String(Math.floor(100000 + Math.random() * 900000));
+  }
+
+  function saveResetTicket(email, code) {
+    sessionStorage.setItem(
+      "lms-reset",
+      JSON.stringify({ email, code, exp: Date.now() + 10 * 60 * 1000, verified: false })
+    );
+  }
+
+  function readResetTicket() {
+    try {
+      const data = JSON.parse(sessionStorage.getItem("lms-reset") || "null");
+      if (!data || Date.now() > data.exp) {
+        sessionStorage.removeItem("lms-reset");
+        return null;
+      }
+      return data;
+    } catch (e) {
+      return null;
+    }
+  }
+
   function headerAccount() {
     const user = currentUser();
     if (!user) {
@@ -1507,9 +1546,11 @@
     const emailHint = $("#email-hint");
     const pwHint = $("#pw-hint");
     const errEl = $("#auth-error");
+    const okEl = $("#auth-ok");
     const step1 = auth.querySelector('[data-step="1"]');
     const step2 = auth.querySelector('[data-step="2"]');
     const isRegister = !!$("#name");
+    if (okEl && q.get("reset") === "ok") okEl.hidden = false;
 
     $("#pw-toggle")?.addEventListener("click", () => {
       const btn = $("#pw-toggle");
@@ -1618,8 +1659,12 @@
         if (!rec) {
           const found = accounts.find((a) => a.email === email && a.password === password);
           if (!found) {
+            const emailKnown = accounts.some((a) => a.email === email);
             errEl.hidden = false;
-            errEl.textContent = "No match for that email and password. Check both, or join free first.";
+            errEl.textContent = emailKnown
+              ? "Password is incorrect."
+              : "No match for that email and password. Check both, or join free first.";
+            showAuthToast("Password is incorrect");
             if (submitBtn) submitBtn.disabled = false;
             return;
           }
@@ -1633,6 +1678,179 @@
       const session = currentUser();
       if (course) saveEnroll(session.role, course);
       else location.href = "profile.html";
+    });
+  }
+
+  const resetForm = $("#reset-form");
+  if (resetForm) {
+    const emailEl = $("#reset-email");
+    const emailHint = $("#reset-email-hint");
+    const sendBtn = $("#reset-send");
+    const verifyBtn = $("#reset-verify");
+    const resendBtn = $("#reset-resend");
+    const saveBtn = $("#reset-save");
+    const errEl = $("#reset-error");
+    const passEl = $("#reset-password");
+    const confirmEl = $("#reset-confirm");
+    const pwHint = $("#reset-pw-hint");
+    const stepEmail = resetForm.querySelector('[data-reset-step="email"]');
+    const stepCode = resetForm.querySelector('[data-reset-step="code"]');
+    const stepNew = resetForm.querySelector('[data-reset-step="new"]');
+    const lead = $("#reset-lead");
+
+    const showResetErr = (msg) => {
+      errEl.hidden = false;
+      errEl.textContent = msg;
+      showAuthToast(msg);
+    };
+    const hideResetErr = () => {
+      errEl.hidden = true;
+    };
+    const showStep = (name) => {
+      stepEmail.hidden = name !== "email";
+      stepCode.hidden = name !== "code";
+      stepNew.hidden = name !== "new";
+    };
+    const paintEmail = () => {
+      const typed = emailEl.value.trim().length > 0;
+      const ok = isEmailComplete(emailEl.value);
+      emailEl.classList.toggle("is-ok", ok);
+      emailEl.classList.toggle("is-bad", typed && !ok);
+      emailHint.classList.toggle("is-on", typed && !ok);
+      sendBtn.disabled = !ok;
+      return ok;
+    };
+    const paintNewPass = () => {
+      const gaps = passwordGaps(passEl.value);
+      const typed = passEl.value.length > 0;
+      const ok = gaps.length === 0;
+      passEl.classList.toggle("is-ok", ok);
+      passEl.classList.toggle("is-bad", typed && !ok);
+      pwHint.classList.toggle("is-on", typed && !ok);
+      if (typed && !ok) {
+        pwHint.textContent =
+          "This lock is still unfinished. Add " + gaps.join(", ").replace(/, ([^,]*)$/, " and $1") + ".";
+      }
+      const match = passEl.value && passEl.value === confirmEl.value;
+      confirmEl.classList.toggle("is-ok", match);
+      confirmEl.classList.toggle("is-bad", confirmEl.value.length > 0 && !match);
+      saveBtn.disabled = !(ok && match);
+      return ok && match;
+    };
+    const issueCode = (email) => {
+      const code = makeResetCode();
+      saveResetTicket(email, code);
+      $("#reset-code-show").textContent = code;
+      $("#reset-code").value = "";
+      lead.textContent = "Enter the 6-digit campus reset code, then create a new password.";
+      showStep("code");
+    };
+
+    $("#reset-pw-toggle")?.addEventListener("click", () => {
+      const btn = $("#reset-pw-toggle");
+      const show = passEl.type === "password";
+      passEl.type = show ? "text" : "password";
+      btn.innerHTML = show
+        ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 3l18 18M10.5 10.6a3 3 0 004 4M9.4 5.1A10.6 10.6 0 0112 5c6.5 0 10 7 10 7a17.4 17.4 0 01-4.2 4.8M6.1 6.1A17.5 17.5 0 002 12s3.5 7 10 7c1.3 0 2.5-.2 3.6-.6"/></svg>`
+        : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`;
+      btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      btn.title = show ? "Hide password" : "Show password";
+    });
+
+    emailEl.addEventListener("input", paintEmail);
+    passEl.addEventListener("input", paintNewPass);
+    confirmEl.addEventListener("input", paintNewPass);
+    emailEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendBtn.click();
+      }
+    });
+    $("#reset-code").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        verifyBtn.click();
+      }
+    });
+    paintEmail();
+
+    sendBtn.addEventListener("click", () => {
+      hideResetErr();
+      if (!paintEmail()) return;
+      const email = emailEl.value.trim().toLowerCase();
+      const accounts = getAccounts();
+      const found = accounts.find((a) => a.email === email);
+      const rec = loadRecord(email);
+      if (!found && !rec) {
+        showResetErr("No campus account for this email.");
+        return;
+      }
+      issueCode(email);
+    });
+
+    resendBtn.addEventListener("click", () => {
+      hideResetErr();
+      const email = (readResetTicket()?.email || emailEl.value).trim().toLowerCase();
+      if (!isEmailComplete(email)) {
+        showResetErr("Enter a complete email first.");
+        showStep("email");
+        return;
+      }
+      issueCode(email);
+    });
+
+    verifyBtn.addEventListener("click", () => {
+      hideResetErr();
+      const ticket = readResetTicket();
+      const typed = ($("#reset-code").value || "").replace(/\s/g, "");
+      if (!ticket) {
+        showResetErr("Reset code expired. Send a new one.");
+        showStep("email");
+        return;
+      }
+      if (typed !== ticket.code) {
+        showResetErr("That reset code is incorrect.");
+        return;
+      }
+      ticket.verified = true;
+      sessionStorage.setItem("lms-reset", JSON.stringify(ticket));
+      lead.textContent = "Create a new password, then confirm it.";
+      showStep("new");
+      passEl.focus();
+    });
+
+    resetForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      hideResetErr();
+      const ticket = readResetTicket();
+      if (!ticket?.verified) {
+        showResetErr("Verify the reset code first.");
+        return;
+      }
+      if (!paintNewPass()) {
+        if (passEl.value !== confirmEl.value) showResetErr("New passwords do not match.");
+        return;
+      }
+      const email = ticket.email;
+      const next = passEl.value;
+      const accounts = getAccounts();
+      const i = accounts.findIndex((a) => a.email === email);
+      if (i >= 0) {
+        accounts[i].password = next;
+        saveAccounts(accounts);
+      } else {
+        const rec = loadRecord(email) || normalizeRecord({ email });
+        accounts.push({
+          id: rec.id,
+          name: rec.name || "",
+          email,
+          password: next,
+          role: rec.role || "student"
+        });
+        saveAccounts(accounts);
+      }
+      sessionStorage.removeItem("lms-reset");
+      location.href = "login.html?reset=ok";
     });
   }
 
