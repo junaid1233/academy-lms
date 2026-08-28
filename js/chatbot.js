@@ -1,4 +1,5 @@
 (function () {
+<<<<<<< Updated upstream
   const TOPICS = [
     {
       id: "about",
@@ -869,6 +870,72 @@
       }).filter(function (x) { return x.titles.length; });
 
       // "kon kon / which" → name list; "kya kya / what" → kinds + samples
+=======
+  const $ = (s, r = document) => r.querySelector(s);
+
+  const LEVELS = ["Beginner", "Intermediate", "Advanced", "Expert"];
+
+  function detectReplyLang(q) {
+    const t = String(q || "");
+    if (/[\u0600-\u06FF]/.test(t)) return "ur";
+    if (/[\u0900-\u097F]/.test(t)) return "hi";
+    if (/[\u4e00-\u9fff]/.test(t)) return "zh";
+    if (/[\u3040-\u30ff]/.test(t)) return "ja";
+    if (/[\u0600-\u06FF]/.test(t) === false && /(kya|hai|hain|kaise|kon|batao|mujhe|site|course|login)/i.test(t) && /(hai|hain|kaise|kon|kya)/i.test(t))
+      return "ur-roman";
+    return "en";
+  }
+
+  function say(lang, map) {
+    return map[lang] || map.en || Object.values(map)[0] || "";
+  }
+
+  function liveFromLMS(raw, lang) {
+    const L = window.LMS;
+    if (!L || !Array.isArray(L.courses)) return null;
+    const q = String(raw || "").toLowerCase().trim();
+    if (!q) return null;
+
+    const courseCount = L.courses.length;
+    const levels = (L.levels && L.levels.length ? L.levels : LEVELS).slice();
+    const courseWord = /(course|courses|kurs|کورس|कोर्स|课程|コース|curso|cours)/.test(q);
+
+    const askCount =
+      courseWord &&
+      /(kitne|kitni|how many|count|number of|total|کتنے|कितने|多少|いくつ)/.test(q);
+
+    if (askCount) {
+      return say(lang, {
+        en: "LMS Academy currently lists " + courseCount + " free courses across " + levels.join(", ") + ". Open courses.html for the full catalog.",
+        "ur-roman": "LMS Academy pe abhi " + courseCount + " free courses hain (" + levels.join(", ") + "). Poori list courses.html pe hai.",
+        ur: "ایل ایم ایس اکیڈمی پر فی الحال " + courseCount + " مفت کورسز ہیں۔ مکمل فہرست courses.html پر ہے۔",
+        hi: "LMS Academy में अभी " + courseCount + " मुफ्त कोर्स हैं। पूरी सूची courses.html पर है।"
+      });
+    }
+
+    const askCourseList =
+      courseWord &&
+      /(kon\s*kon|kya\s*kya|kons[ae]|kaun\s*kaun|which|what|list|all|sare|saare|available|names?|batao|dikhao|show|mention|کون کون|کیا کیا|कौन कौन|क्या क्या|哪些|どんな)/.test(
+        q
+      );
+
+    if (askCourseList) {
+      const byLevel = levels
+        .map(function (lv) {
+          return {
+            lv: lv,
+            titles: L.courses.filter(function (c) {
+              return c.level === lv;
+            }).map(function (c) {
+              return c.title;
+            })
+          };
+        })
+        .filter(function (x) {
+          return x.titles.length;
+        });
+
+>>>>>>> Stashed changes
       const wantNames = /(kon\s*kon|kaun\s*kaun|kons[ae]|which|list|names?|dikhao|show|sare|saare|all|کون کون|कौन कौन)/.test(q);
       const wantKinds = /(kya\s*kya|what|kis\s*qisim|kis\s*tarah|types?|kinds?|کیا کیا|क्या क्या)/.test(q);
 
@@ -880,9 +947,15 @@
           .join(" | ");
         return say(lang, {
           en: "Courses come in 4 levels — " + levels.join(", ") + ". Total " + courseCount + ". " + summary + ". Ask “which courses” for more names, or a topic like Python.",
+<<<<<<< Updated upstream
           "ur-roman": "Courses 4 levels mein hain — " + levels.join(", ") + ". Kul " + courseCount + ". " + summary + ". Zyada naam ke liye “kon kon se courses” poochho, ya Python/React likho.",
           ur: "کورسز چار لیول میں ہیں — " + levels.join("، ") + "۔ کل " + courseCount + "۔ " + summary + "۔",
           hi: "कोर्स 4 स्तरों में हैं — " + levels.join(", ") + "। कुल " + courseCount + "। " + summary + "।"
+=======
+          "ur-roman": "Courses 4 levels mein hain — " + levels.join(", ") + ". Kul " + courseCount + ". " + summary + ". Zyada naam ke liye “kon kon se courses” poochho.",
+          ur: "کورسز چار لیول میں ہیں — " + levels.join("، ") + "۔ کل " + courseCount + "۔",
+          hi: "कोर्स 4 स्तरों में हैं — " + levels.join(", ") + "। कुल " + courseCount + "।"
+>>>>>>> Stashed changes
         });
       }
 
@@ -891,6 +964,7 @@
         const more = x.titles.length - show.length;
         return x.lv + ": " + show.join("; ") + (more > 0 ? " …+" + more : "");
       });
+<<<<<<< Updated upstream
       const body = chunks.join(" | ");
       return say(lang, {
         en: "Course names (" + courseCount + " total): " + body + ". Full catalog: courses.html — or ask one name (Python, React…).",
@@ -991,12 +1065,39 @@
         "ur-roman": `${levelHit} courses (sample): ${list.join("; ")}${more > 0 ? ` … +${more} aur` : ""}. courses.html?level=${encodeURIComponent(levelHit)}`,
         ur: `${levelHit} کورسز: ${list.join("؛ ")}`,
         hi: `${levelHit} कोर्स: ${list.join("; ")}`
+=======
+      return say(lang, {
+        en: "Course names (" + courseCount + " total): " + chunks.join(" | ") + ". Full catalog: courses.html — or ask one name (Python, React…).",
+        "ur-roman": "Courses ke naam (kul " + courseCount + "): " + chunks.join(" | ") + ". Poori list courses.html.",
+        ur: "کورسز کے نام (کل " + courseCount + "): " + chunks.join(" | ") + "۔",
+        hi: "कोर्स के नाम (कुल " + courseCount + "): " + chunks.join(" | ") + "।"
+      });
+    }
+
+    // Match a specific course title keyword
+    const hit = L.courses.find(function (c) {
+      const title = String(c.title || "").toLowerCase();
+      const words = title.split(/\s+/).filter(function (w) {
+        return w.length > 3;
+      });
+      return words.some(function (w) {
+        return q.indexOf(w) !== -1;
+      }) || (c.id && q.indexOf(String(c.id).replace(/-/g, " ")) !== -1);
+    });
+    if (hit && courseWord) {
+      return say(lang, {
+        en: hit.title + " — " + hit.level + " · " + (hit.instructor || "campus guide") + ". " + (hit.desc || "") + " Open course.html?id=" + hit.id,
+        "ur-roman": hit.title + " — " + hit.level + " · " + (hit.instructor || "") + ". Detail: course.html?id=" + hit.id,
+        ur: hit.title + " — " + hit.level + "۔",
+        hi: hit.title + " — " + hit.level + "।"
+>>>>>>> Stashed changes
       });
     }
 
     return null;
   }
 
+<<<<<<< Updated upstream
   function answerFor(text) {
     const lang = detectReplyLang(text);
     const live = liveFromLMS(text, lang);
@@ -1033,10 +1134,72 @@
     if (title) title.textContent = ui.title;
     if (sub) sub.textContent = ui.sub;
     if (input) input.placeholder = ui.ph;
+=======
+  const FAQ = [
+    {
+      keys: ["hello", "hi", "hey", "salam", "help", "about", "site kya", "what is", "lms academy", "campus"],
+      en: "LMS Academy is a free campus to learn IT — courses, study paths, certifications, and teaching after admin permission. Ask about login, courses, learning, or teaching.",
+      "ur-roman": "LMS Academy free campus hai — courses, paths, certificates, aur teach karne se pehle admin permission. Login, courses, learning, ya teaching poochho.",
+      ur: "ایل ایم ایس اکیڈمی ایک مفت کیمپس ہے — کورسز، پاتھ، سرٹیفکیٹس۔ لاگ ان، کورسز یا ٹیچنگ پوچھیں۔"
+    },
+    {
+      keys: ["login", "log in", "sign in", "kaise login"],
+      en: "Open login.html. Enter a full email, then a strong password (8+ with upper, lower, number, symbol). Teachers and students use the same login method.",
+      "ur-roman": "login.html kholo. Poora email, phir strong password (8+). Teacher aur student dono same login method use karte hain."
+    },
+    {
+      keys: ["register", "join", "sign up", "account"],
+      en: "Join free on register.html with email + strong password. Pick student or teacher role; both use the same email/password flow.",
+      "ur-roman": "register.html pe free join karo. Student ya teacher role — login method same rehta hai."
+    },
+    {
+      keys: ["learn", "start course", "enroll", "desk", "select course", "seekh"],
+      en: "Log in, pick up to 2 courses for your desk, then press Done (or Start) to open lectures. Profile and dashboard show your seats.",
+      "ur-roman": "Login karo, max 2 courses desk pe select karo, Done/Start dabao. Profile aur dashboard pe seats dikhti hain."
+    },
+    {
+      keys: ["teach", "teacher", "instructor", "permission", "admin"],
+      en: "Teachers log in the same way as students, then open teach.html. Offer your own course (title + level + description), email admin for permission. Admin approves on admin.html — then the instructor hub unlocks. You do not pick built-in catalog courses to teach.",
+      "ur-roman": "Teacher bhi same login. teach.html pe apna course offer karo (title, level, description), admin ko email. Admin admin.html pe approve kare — tab hub khulega. Built-in catalog select nahi karna."
+    },
+    {
+      keys: ["done", "done button"],
+      en: "After you select a course for your desk, a Done button appears at the bottom. Click it to open that course and start learning.",
+      "ur-roman": "Course select karte hi neeche Done button aata hai — us se course open hota hai."
+    },
+    {
+      keys: ["password"],
+      en: "Password must be at least 8 characters with lowercase, UPPERCASE, a number, and a symbol.",
+      "ur-roman": "Password kam az kam 8 characters: chhoti, bari letter, number, aur symbol."
+    }
+  ];
+
+  function faqAnswer(raw, lang) {
+    const q = String(raw || "").toLowerCase();
+    for (let i = 0; i < FAQ.length; i++) {
+      const item = FAQ[i];
+      if (item.keys.some(function (k) {
+        return q.indexOf(k) !== -1;
+      })) {
+        return say(lang, item);
+      }
+    }
+    return say(lang, {
+      en: "Ask about courses list, login, how to learn, teaching, or admin permission — I answer from LMS Academy details only.",
+      "ur-roman": "Courses list, login, seekhna, teaching, ya admin permission poochho — main sirf LMS Academy ke bare mein jawab deta hoon.",
+      ur: "کورسز کی فہرست، لاگ ان، سیکھنا یا ٹیچنگ پوچھیں۔"
+    });
+  }
+
+  function answerFor(text) {
+    const lang = detectReplyLang(text);
+    return liveFromLMS(text, lang) || faqAnswer(text, lang);
+>>>>>>> Stashed changes
   }
 
   function mountChatbot() {
     if ($("#lms-chatbot")) return;
+<<<<<<< Updated upstream
     const ui = uiForSite();
 
     const root = document.createElement("div");
@@ -1133,6 +1296,165 @@
 
   function $(sel) {
     return document.querySelector(sel);
+=======
+
+    const PROMPTS = [
+      { id: "q1", label: "Which courses are on LMS Academy?", ask: "which courses are available" },
+      { id: "q2", label: "How do I log in as student or teacher?", ask: "how to login" },
+      { id: "chat", label: "Chat with LMS Assistant", ask: "" }
+    ];
+
+    const root = document.createElement("div");
+    root.id = "lms-chatbot";
+    root.innerHTML =
+      '<button type="button" class="lms-chat-fab" id="lms-chat-open" aria-label="Open campus chatbot">' +
+      '<img src="assets/chatbot-robot.svg" alt="" width="40" height="40" />' +
+      "</button>" +
+      '<div class="lms-chat-panel" id="lms-chat-panel" aria-hidden="true">' +
+      '<div class="lms-chat-view is-home" id="lms-chat-home">' +
+      '<header class="lms-chat-head">' +
+      '<div class="lms-chat-brand"><img src="assets/chatbot-robot.svg" alt="" width="28" height="28" /><span>LMS Assistant</span></div>' +
+      '<button type="button" class="lms-chat-close" data-chat-close aria-label="Close">×</button>' +
+      "</header>" +
+      '<div class="lms-chat-home-body">' +
+      '<div class="lms-chat-hero">' +
+      '<div class="lms-chat-orb" aria-hidden="true"></div>' +
+      '<img class="lms-chat-hero-bot" src="assets/chatbot-robot.svg" alt="" width="56" height="56" />' +
+      "<h3>Campus help desk</h3>" +
+      "<p>Pick a starter, or open a free chat with the LMS Assistant.</p>" +
+      "</div>" +
+      '<div class="lms-chat-starters" id="lms-chat-starters"></div>' +
+      "</div>" +
+      "</div>" +
+      '<div class="lms-chat-view is-thread" id="lms-chat-thread" hidden>' +
+      '<header class="lms-chat-head">' +
+      '<button type="button" class="lms-chat-back" id="lms-chat-back" aria-label="Back to home">←</button>' +
+      '<div class="lms-chat-brand"><img src="assets/chatbot-robot.svg" alt="" width="28" height="28" /><span>Chat</span></div>' +
+      '<button type="button" class="lms-chat-close" data-chat-close aria-label="Close">×</button>' +
+      "</header>" +
+      '<div class="lms-chat-log" id="lms-chat-log"></div>' +
+      '<form class="lms-chat-form" id="lms-chat-form">' +
+      '<input type="text" id="lms-chat-input" placeholder="Type your question…" autocomplete="off" />' +
+      '<button type="submit" class="lms-chat-send" aria-label="Send">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>' +
+      "</button>" +
+      "</form>" +
+      "</div>" +
+      "</div>";
+    document.body.appendChild(root);
+
+    const panel = $("#lms-chat-panel");
+    const home = $("#lms-chat-home");
+    const thread = $("#lms-chat-thread");
+    const log = $("#lms-chat-log");
+    const input = $("#lms-chat-input");
+    const starters = $("#lms-chat-starters");
+
+    starters.innerHTML = PROMPTS.map(function (p) {
+      const kind = p.ask ? "is-prompt" : "is-open-chat";
+      return (
+        '<button type="button" class="lms-chat-starter ' +
+        kind +
+        '" data-ask="' +
+        encodeURIComponent(p.ask) +
+        '">' +
+        "<span>" +
+        p.label +
+        "</span>" +
+        "<i aria-hidden=\"true\">›</i>" +
+        "</button>"
+      );
+    }).join("");
+
+    function closePanel() {
+      panel.classList.remove("is-open");
+      panel.setAttribute("aria-hidden", "true");
+      showHome();
+    }
+
+    function openPanel() {
+      panel.classList.add("is-open");
+      panel.setAttribute("aria-hidden", "false");
+      showHome();
+    }
+
+    function showHome() {
+      home.hidden = false;
+      thread.hidden = true;
+      home.classList.add("is-on");
+      thread.classList.remove("is-on");
+    }
+
+    function showThread() {
+      home.hidden = true;
+      thread.hidden = false;
+      home.classList.remove("is-on");
+      thread.classList.add("is-on");
+    }
+
+    function clearLog() {
+      log.innerHTML = "";
+    }
+
+    function push(role, text) {
+      const row = document.createElement("div");
+      row.className = "lms-chat-msg is-" + role;
+      row.textContent = text;
+      log.appendChild(row);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function openChat(presetAsk) {
+      clearLog();
+      showThread();
+      if (presetAsk) {
+        push("user", presetAsk);
+        push("bot", answerFor(presetAsk));
+      }
+      setTimeout(function () {
+        input.focus();
+      }, 40);
+    }
+
+    $("#lms-chat-open").addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (panel.classList.contains("is-open")) closePanel();
+      else openPanel();
+    });
+
+    root.querySelectorAll("[data-chat-close]").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closePanel();
+      });
+    });
+
+    $("#lms-chat-back").addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      clearLog();
+      showHome();
+    });
+
+    starters.querySelectorAll("[data-ask]").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const ask = decodeURIComponent(btn.getAttribute("data-ask") || "");
+        openChat(ask);
+      });
+    });
+
+    $("#lms-chat-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const text = (input.value || "").trim();
+      if (!text) return;
+      push("user", text);
+      input.value = "";
+      push("bot", answerFor(text));
+    });
+>>>>>>> Stashed changes
   }
 
   if (document.readyState === "loading") {
