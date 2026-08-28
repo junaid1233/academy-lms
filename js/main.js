@@ -822,7 +822,7 @@
     bindLang._ready = true;
 
     document.addEventListener("click", (e) => {
-      const langBtn = e.target.closest("[data-lang]");
+      const langBtn = e.target.closest("button[data-lang]");
       if (langBtn) {
         e.preventDefault();
         e.stopPropagation();
