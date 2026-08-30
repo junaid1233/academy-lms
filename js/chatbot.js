@@ -105,6 +105,7 @@
       keys: [
         "teacher", "teach", "instructor", "teaching", "permission", "teach.html", "padhao", "parhao", "ustad", "tutor",
         "become teacher", "teacher kaise", "teach kaise", "how to teach", "apply teach", "teaching permission", "course publish", "want to teach",
+        "teacher section", "teacher area", "teacher vs student", "teacher alag", "student alag",
         "پڑھانا", "استاد", "استاد بنیں", "اجازت", "معلم", "تدريس", "أريد أن أعلم",
         "老师", "教学", "如何授课", "शिक्षक", "अध्यापक", "पढ़ाना", "教える", "講師",
         "enseignant", "enseigner", "profesor", "enseñar", "lehrer", "unterrichten", "учитель", "가르치기", "öğretmek", "mengajar", "insegnante"
@@ -116,6 +117,38 @@
         "instructor hub", "instructor-hub", "teaching hub", "my courses teach", "approved teacher", "teacher hub",
         "instructor panel", "teacher dashboard", "teaching tools", "after approval", "permission ke baad", "hub for teachers",
         "انسٹرکٹر ہب", "ٹیچر ہب", "لوحة المعلم", "教师中心", "インストラクターハブ", "centro docente"
+      ]
+    },
+    {
+      id: "teacher_flow",
+      keys: [
+        "teacher step", "steps to teach", "how become teacher", "teacher process", "teacher banana kaise",
+        "student vs teacher", "teacher different", "student different", "teacher student fark",
+        "teacher section", "student section", "teacher alag kaise", "teacher or student",
+        "teacher login", "teacher account", "teacher role", "teaching role",
+        "استاد بنانا", "استاد کیسے بنیں", "استاد اور طالب علم", "teacher ka kya", "ustad kaise banen"
+      ]
+    },
+    {
+      id: "add_course",
+      keys: [
+        "add course", "add my course", "course add karna", "apna course dalna", "my course", "mera course",
+        "course submit", "course upload", "course publish", "want to add course", "course dalna chahta",
+        "i have a course", "mere pas course hai", "course hai dalna", "course site pe dalna",
+        "I have course", "course available hai", "course lagana", "course put", "upload course",
+        "میرے پاس کورس ہے", "کورس ڈالنا", "کورس اپلوڈ", "کورس شامل کرنا",
+        "apna course upload", "apna course publish", "course site pe", "course karana chahta"
+      ]
+    },
+    {
+      id: "admin_contact",
+      keys: [
+        "admin", "admin email", "admin contact", "admin se permission", "admin se milna", "admin kaise contact",
+        "admin ko mail", "admin ka email", "administrator", "site admin", "lms admin",
+        "permission admin se", "admin approve", "admin se course", "admin se puchna",
+        "muhamadjunaid27", "junaid admin", "admin junaid",
+        "ایڈمن", "ایڈمن ای میل", "ایڈمن سے اجازت", "ایڈمن سے رابطہ",
+        "منتظم", "إدارة", "مدير الموقع", "admin mail", "site manager"
       ]
     },
     {
@@ -263,9 +296,15 @@
     categories:
       "Categories (topics): Computer Basics, Web Development, Programming, Data Science, AI & Machine Learning, Cloud & DevOps, Cybersecurity, Mobile Development, Computer Science, Databases, Math for IT, UI/UX for IT, Career Skills. Open a topic page or filter on Courses.",
     teach:
-      "Teach page: create teacher profile, put that course on your student desk first, email campus.steward@lmsacademy.org for permission. When approved, use Instructor hub. Teaching here is free.",
+      "🎓 TEACHER SECTION (Different from Student): To become a teacher — (1) Register/login as a student first. (2) Open the Teach page. (3) Put the course you want to teach on your student desk first. (4) Fill in your teacher profile (headline + bio). (5) Email the admin: muhamadjunaid27@gmail.com with your name, course title, and a short intro. (6) Once admin approves, your Instructor Hub unlocks. Teaching is free here.",
     instructor:
-      "Instructor hub (after steward approval): manage teaching courses, materials, and your instructor profile. Reach it from Teach flow once permission is granted.",
+      "Instructor Hub (after admin approval): manage your teaching courses, materials, and instructor profile. Reach it from the Teach flow once permission is granted by the admin (muhamadjunaid27@gmail.com). Student dashboard and Teacher dashboard are separate.",
+    teacher_flow:
+      "👨‍🏫 TEACHER vs STUDENT — Key Differences:\n• Student: browse catalog, seat max 2 courses on desk, complete lectures, practice in Study Hub.\n• Teacher: same as student PLUS — apply via Teach page, get admin approval (email: muhamadjunaid27@gmail.com), then unlock Instructor Hub to manage and teach courses.\n→ Both roles start as student. Teacher role is added on top after admin permission.",
+    add_course:
+      "📚 Want to add YOUR course to LMS Academy? Here is the step-by-step:\n1. Login / Join free as a student.\n2. Go to Teach page — build your teacher profile (headline + short bio).\n3. Put the course on your student desk first (Select for desk).\n4. Email the admin at muhamadjunaid27@gmail.com with: your name, course title, course description, and a short message saying you want to list it here.\n5. Admin will review and approve. Once approved, your Instructor Hub opens and you can manage that course on the site.\n💡 Teaching here is completely free!",
+    admin_contact:
+      "🔑 LMS Academy Admin Contact:\n📧 Email: muhamadjunaid27@gmail.com\n\nFor: teacher permission requests, course submission/listing, any site issue, or admin-level help.\n\nHow to email the admin: send your name, your registered email, what you need (e.g. 'I want to teach Python course'), and a brief intro. Admin will reply and approve your Instructor Hub access.",
     study:
       "Study Hub (study.html): short original units, practice, quizzes, and mastery challenges (e.g. foundations, Python-style drills). Open from header or dashboard. Progress/mastery can save per unit.",
     paths:
@@ -273,7 +312,7 @@
     certs:
       "Certifications page: project-based certificates (e.g. Responsive Web Design, JS Algorithms, Front-End Libraries, Data Viz, Back End & APIs, Python, Data Science, ML, Cloud, Cybersecurity). Real projects = proof — not just watching videos.",
     dashboard:
-      "Dashboard = My learning: continue seated courses, jump to Study Hub, and see learning progress. Teaching block is not shown on the student dashboard; teachers use Instructor hub.",
+      "Dashboard = My learning: continue seated courses, jump to Study Hub, and see learning progress. Teaching block is not shown on the student dashboard; teachers use Instructor Hub (separate).",
     profile:
       "Profile = account settings (Udemy-style): name, photo/avatar, language, My learning (desk courses — remove to free a seat), and account info. Open via your name chip in the header.",
     home:
@@ -315,9 +354,9 @@
       categories:
         "Categories: Computer Basics, Web, Programming, Data Science, AI/ML, Cloud & DevOps, Cybersecurity, Mobile, CS, Databases, Math for IT, UI/UX, Career Skills.",
       teach:
-        "Teach: teacher profile → pehle desk pe course → campus.steward@lmsacademy.org → approve ke baad Instructor hub. Teaching free.",
+        "🎓 TEACHER SECTION (Student se alag): Teacher banne ke steps — (1) Pehle student ki tarah register/login karo. (2) Teach page kholo. (3) Jo course padhana ho, pehle apne desk pe lagao. (4) Teacher profile bharo (headline + bio). (5) Admin ko email karo: muhamadjunaid27@gmail.com — apna naam, course, aur chhota parichay. (6) Admin approve kare to Instructor Hub khul jata hai. Padhana yahan free hai.",
       instructor:
-        "Instructor hub (permission ke baad): apne teaching courses manage. Teach flow se milta hai.",
+        "Instructor Hub (admin approval ke baad): apne teaching courses manage. Admin email: muhamadjunaid27@gmail.com. Student aur Teacher dashboard alag hain.",
       study:
         "Study Hub: short units, practice, quiz, mastery. Header ya dashboard se. Progress save ho sakti hai.",
       paths:
@@ -337,13 +376,13 @@
       logout:
         "Log out → confirm → home, session clear.",
       contact:
-        "Steward: campus.steward@lmsacademy.org. Site help is bot se poochho.",
+        "🔑 Admin: muhamadjunaid27@gmail.com (teacher permission, course listing)\nCampus steward: campus.steward@lmsacademy.org",
       search:
         "Header search ya Courses filters. Yahan bhi skill likho (Python, SQL…) — catalog match karunga.",
       done:
         "Select ke baad Done bar → Done se course open. Dashboard/Profile se bhi.",
       fallback:
-        "LMS Academy sawal: about, pages, login/join, password, courses, categories, desk, Study Hub, Paths, certs, teach, dashboard, profile, language. Course naam bhi poochho."
+        "LMS Academy sawal: about, login/join, password, courses, desk, Study Hub, Paths, certs, teach, dashboard, profile. Puchh sakte ho: teacher kaise banen, apna course kaise dalen, admin email. Course naam bhi poochho."
     },
     ur: {
       about: "LMS Academy مفت آئی ٹی کیمپس ہے — کورسز، اسٹڈی ہب، پاتھس، سرٹیفکیٹ۔",
@@ -355,8 +394,8 @@
       desk: "ڈیسک پر زیادہ سے زیادہ دو کورس۔ بھرا ہو تو پروفائل سے ایک ہٹائیں۔",
       course: "مفت کیٹلاگ Beginner تا Expert۔ کورس کا نام پوچھیں تفصیل کے لیے۔",
       categories: "زمرے: Basics، Web، Programming، Data، AI، Cloud، Security، Mobile، CS، DB، Math، UI/UX، Career۔",
-      teach: "Teach → پروفائل → ڈیسک → steward میل → Instructor hub۔",
-      instructor: "اجازت کے بعد Instructor hub۔",
+      teach: "🎓 Teacher banne ke liye: (1) Login/Join. (2) Teach page kholein. (3) Pehle course desk pe rakhein. (4) Admin ko email karein: muhamadjunaid27@gmail.com - apna naam, course, aur mukhtasar taruf. (5) Admin ki ijaazat ke baad Instructor Hub khulta hai. Yahan taleem muft hai.",
+      instructor: "Instructor Hub (admin ki ijaazat ke baad). Admin email: muhamadjunaid27@gmail.com. Student aur Teacher dashboard alag hain.",
       study: "اسٹڈی ہب: مختصر یونٹس اور مشق۔",
       paths: "کیریئر پاتھس: Front-End، Back-End، Full-Stack، Data، AI/ML، Cloud، Security، Mobile۔",
       certs: "سرٹیفکیٹ پروجیکٹ پر مبنی ہیں۔",
@@ -366,7 +405,7 @@
       free: "یہاں سیکھنا/پڑھانا مفت ہے۔",
       language: "Explore سے زبان بدلیں؛ بوٹ سوال کی زبان میں جواب دیتا ہے۔",
       logout: "Log out دبائیں اور تصدیق کریں۔",
-      contact: "campus.steward@lmsacademy.org",
+      contact: "🔑 Admin: muhamadjunaid27@gmail.com (teacher ijaazat, course listing)\nCampus steward: campus.steward@lmsacademy.org",
       search: "ہیڈر سرچ یا Courses فلٹر؛ یہاں بھی کورس نام لکھیں۔",
       done: "Select کے بعد Done بار سے کورس کھولیں۔",
       fallback: "صرف LMS Academy کے سوالات پوچھیں۔"
