@@ -419,9 +419,12 @@
           ? {
               headline: rec.teachProfile.headline || "",
               bio: rec.teachProfile.bio || "",
-              courseId: rec.teachProfile.courseId || ""
+              customCourse: rec.teachProfile.customCourse && typeof rec.teachProfile.customCourse === "object"
+                ? rec.teachProfile.customCourse
+                : { title: "", category: "", level: "Beginner", desc: "", outcomes: "", hours: 0, lectures: 0 }
             }
-          : { headline: "", bio: "", courseId: "" },
+          : { headline: "", bio: "", customCourse: { title: "", category: "", level: "Beginner", desc: "", outcomes: "", hours: 0, lectures: 0 } },
+      customCourses: Array.isArray(rec.customCourses) ? rec.customCourses : [],
       updatedAt: rec.updatedAt || new Date().toISOString()
     };
   }
@@ -511,14 +514,24 @@
       course_id,
       course_title: titleOf(course_id)
     }));
-    const teacherRows = (rec.teaching || []).map((course_id) => ({
-      user_id: String(rec.id || ""),
-      name: rec.name || "",
-      email: rec.email,
-      course_id,
-      course_title: titleOf(course_id),
-      headline: rec.teachProfile?.headline || ""
-    }));
+    const teacherRows = (rec.teaching || []).map((course_id) => {
+      const custom = (rec.customCourses || []).find(cc => cc.id === course_id);
+      return {
+        user_id: String(rec.id || ""),
+        name: rec.name || "",
+        email: rec.email,
+        course_id,
+        course_title: custom ? custom.title : titleOf(course_id),
+        headline: rec.teachProfile?.headline || "",
+        course_category: custom?.category || "",
+        course_level: custom?.level || "",
+        course_desc: custom?.desc || "",
+        course_outcomes: custom?.outcomes || "",
+        course_hours: custom?.hours || 0,
+        course_lectures: custom?.lectures || 0,
+        is_custom: !!custom
+      };
+    });
     await db.request("lms_student_courses?email=eq." + email, "DELETE");
     if (studentRows.length) {
       const ins = await db.request("lms_student_courses", "POST", studentRows);
@@ -550,6 +563,7 @@
             study: rec.study,
             teachStatus: rec.teachStatus,
             teachProfile: rec.teachProfile,
+            customCourses: rec.customCourses,
             profile: rec.profile,
             updatedAt: rec.updatedAt
           }
@@ -577,6 +591,7 @@
           study: rec.study,
           teachStatus: rec.teachStatus,
           teachProfile: rec.teachProfile,
+          customCourses: rec.customCourses,
           profile: rec.profile
         }
       }
@@ -1861,127 +1876,227 @@
       location.href = "login.html?role=teacher";
     } else {
       const rec = activeRecord() || persistRecord(normalizeRecord(user));
-      const preset = q.get("course") || rec.teachProfile.courseId || rec.enrolled[0] || LMS.courses[0].id;
-      const sel = $("#teach-course");
-      sel.innerHTML = LMS.courses
-        .map((c) => {
-          const hold = rec.enrolled.includes(c.id) ? " · on your desk" : "";
-          return `<option value="${c.id}"${c.id === preset ? " selected" : ""}>${c.title} (${c.level})${hold}</option>`;
-        })
-        .join("");
+
+      // Populate category dropdown from LMS.categories
+      const catSel = $("#teach-course-category");
+      if (catSel && typeof LMS !== "undefined" && LMS.categories) {
+        const savedCat = rec.teachProfile.customCourse?.category || "";
+        catSel.innerHTML = LMS.categories
+          .map((cat) => {
+            const label = cat.charAt(0).toUpperCase() + cat.slice(1);
+            return `<option value="${cat}"${cat === savedCat ? " selected" : ""}>${label}</option>`;
+          })
+          .join("");
+      }
+
+      // Pre-fill form fields from saved teachProfile
       $("#teach-headline").value = rec.teachProfile.headline || "";
       $("#teach-bio").value = rec.teachProfile.bio || "";
+      const cc = rec.teachProfile.customCourse || {};
+      if ($("#teach-course-title")) $("#teach-course-title").value = cc.title || "";
+      if ($("#teach-course-level")) $("#teach-course-level").value = cc.level || "Beginner";
+      if ($("#teach-course-desc")) $("#teach-course-desc").value = cc.desc || "";
+      if ($("#teach-course-outcomes")) $("#teach-course-outcomes").value = cc.outcomes || "";
+      if ($("#teach-course-hours")) $("#teach-course-hours").value = cc.hours || "";
+      if ($("#teach-course-lectures")) $("#teach-course-lectures").value = cc.lectures || "";
+
       const statusEl = $("#teach-status");
       const unlockBtn = $("#teach-unlock");
-      const holdHint = $("#teach-hold-hint");
-      const paintHold = () => {
-        const id = sel.value;
-        const holds = activeRecord().enrolled.includes(id);
-        holdHint.style.display = "block";
-        holdHint.className = "field-hint is-on";
-        holdHint.textContent = holds
-          ? "You already hold this ledger. After permission you can teach it."
-          : "This course is not on your desk yet. Seat it as a student first (max two), then ask to teach.";
-      };
+      const askBtn = $("#teach-ask");
+      const submitCourseBtn = $("#teach-submit-course");
+
       const paintStatus = () => {
         const live = activeRecord();
         statusEl.hidden = live.teachStatus === "none";
         statusEl.className = "teach-banner is-" + live.teachStatus;
         if (live.teachStatus === "pending") {
-          statusEl.textContent = "Permission letter is with the steward. Teaching stays locked until they reply.";
+          statusEl.textContent = "Your course details are with the admin. Teaching stays locked until they approve.";
+          askBtn.style.display = "none";
           unlockBtn.style.display = "";
+          submitCourseBtn.style.display = "none";
         } else if (live.teachStatus === "approved") {
-          statusEl.textContent = "The steward opened the door. You may teach courses you hold.";
+          statusEl.textContent = "Admin approved! You can now submit your course to the site.";
+          askBtn.style.display = "none";
           unlockBtn.style.display = "none";
-          $("#teach-ask").textContent = "Add this course to my teaching";
+          submitCourseBtn.style.display = "";
+        } else {
+          askBtn.style.display = "";
+          unlockBtn.style.display = "none";
+          submitCourseBtn.style.display = "none";
         }
       };
-      paintHold();
       paintStatus();
-      sel.addEventListener("change", paintHold);
 
+      // Helper to read all custom course fields from the form
+      const readCourseFields = () => ({
+        title: ($("#teach-course-title")?.value || "").trim(),
+        category: $("#teach-course-category")?.value || "",
+        level: $("#teach-course-level")?.value || "Beginner",
+        desc: ($("#teach-course-desc")?.value || "").trim(),
+        outcomes: ($("#teach-course-outcomes")?.value || "").trim(),
+        hours: parseInt($("#teach-course-hours")?.value) || 0,
+        lectures: parseInt($("#teach-course-lectures")?.value) || 0
+      });
+
+      // Stage 1: Request admin permission (form submit)
       $("#teach-form").addEventListener("submit", (e) => {
         e.preventDefault();
         const live = activeRecord();
-        const courseId = sel.value;
         const headline = ($("#teach-headline").value || "").trim();
         const bio = ($("#teach-bio").value || "").trim();
+        const courseFields = readCourseFields();
+
         if (headline.length < 3 || bio.length < 12) {
-          deskToast("Write a headline and a short about-you before the steward will read it.");
+          deskToast("Write a headline and a short about-you before the admin will review it.");
           return;
         }
+        if (courseFields.title.length < 3) {
+          deskToast("Enter a course title (at least 3 characters).");
+          return;
+        }
+        if (courseFields.desc.length < 10) {
+          deskToast("Write a course description (at least 10 characters).");
+          return;
+        }
+
+        // Save profile + course details
         persistRecord({
           ...live,
-          teachProfile: { headline, bio, courseId }
+          teachProfile: { headline, bio, customCourse: courseFields }
         });
-        const holds = live.enrolled.includes(courseId);
-        const course = LMS.courses.find((c) => c.id === courseId);
+
+        // If already approved, don't re-send email — just save
         if (live.teachStatus === "approved") {
-          if (!holds) {
-            deskToast("Seat this course on your desk first, then you can teach it.");
-            return;
-          }
-          const list = live.teaching.slice();
-          if (!list.includes(courseId)) list.push(courseId);
-          persistRecord({
-            ...activeRecord(),
-            role: live.role === "student" ? "both" : live.role === "teacher" ? "teacher" : "both",
-            teaching: list,
-            teachProfile: { headline, bio, courseId }
-          });
-          deskToast("This ledger is now on your teaching desk.");
-          location.href = "instructor-hub.html";
+          deskToast("Profile updated.");
+          paintStatus();
           return;
         }
+
+        // Build email body with all course details
         const body = [
-          "A teacher asks for permission to teach on LMS Academy.",
+          "A teacher requests permission to upload a course on LMS Academy.",
           "",
+          "=== Instructor Profile ===",
           "Name: " + live.name,
           "Email: " + live.email,
           "Campus ID: " + live.id,
           "Headline: " + headline,
-          "Course: " + (course ? course.title : courseId),
-          "Already holds course: " + (holds ? "yes" : "no"),
           "",
           "About:",
-          bio
+          bio,
+          "",
+          "=== Course Details ===",
+          "Course Title: " + courseFields.title,
+          "Category: " + courseFields.category,
+          "Level: " + courseFields.level,
+          "Hours: " + courseFields.hours,
+          "Lectures: " + courseFields.lectures,
+          "",
+          "Description:",
+          courseFields.desc,
+          "",
+          "What students will learn:",
+          courseFields.outcomes
         ].join("\n");
+
         persistRecord({
           ...activeRecord(),
           teachStatus: "pending",
-          teachProfile: { headline, bio, courseId }
+          teachProfile: { headline, bio, customCourse: courseFields }
         });
+
         location.href =
           "mailto:" +
           ADMIN_EMAIL +
           "?subject=" +
-          encodeURIComponent("Teach permission — " + live.name) +
+          encodeURIComponent("Course upload permission — " + live.name + " — " + courseFields.title) +
           "&body=" +
           encodeURIComponent(body);
         paintStatus();
       });
 
+      // Stage 2: Admin said yes — unlock
       unlockBtn.addEventListener("click", () => {
         const live = activeRecord();
-        const courseId = sel.value;
-        if (!live.enrolled.includes(courseId)) {
-          deskToast("Hold the course on your student desk before teaching it.");
-          return;
-        }
-        const list = live.teaching.slice();
-        if (!list.includes(courseId)) list.push(courseId);
         persistRecord({
           ...live,
-          teachStatus: "approved",
-          role: live.role === "student" ? "both" : "teacher",
-          teaching: list,
-          teachProfile: {
-            headline: ($("#teach-headline").value || "").trim(),
-            bio: ($("#teach-bio").value || "").trim(),
-            courseId
-          }
+          teachStatus: "approved"
         });
-        deskToast("Permission sealed. You may teach.");
+        deskToast("Admin permission granted. You can now submit your course!");
+        paintStatus();
+      });
+
+      // Stage 3: Submit course to site
+      submitCourseBtn.addEventListener("click", () => {
+        const live = activeRecord();
+        const headline = ($("#teach-headline").value || "").trim();
+        const bio = ($("#teach-bio").value || "").trim();
+        const courseFields = readCourseFields();
+
+        if (courseFields.title.length < 3) {
+          deskToast("Enter a course title before submitting.");
+          return;
+        }
+
+        // Generate unique course ID
+        const courseId = "custom-" + Date.now();
+
+        // Build custom course object
+        const customCourse = {
+          id: courseId,
+          title: courseFields.title,
+          category: courseFields.category,
+          level: courseFields.level,
+          desc: courseFields.desc,
+          outcomes: courseFields.outcomes,
+          hours: courseFields.hours,
+          lectures: courseFields.lectures,
+          instructor: live.name,
+          students: 0,
+          rating: 0,
+          reviews: 0,
+          price: "Free",
+          badge: "",
+          isCustom: true
+        };
+
+        // Add to customCourses array
+        const customCourses = (live.customCourses || []).slice();
+        customCourses.push(customCourse);
+
+        // Add to teaching list
+        const teaching = live.teaching.slice();
+        if (!teaching.includes(courseId)) teaching.push(courseId);
+
+        // Also add to LMS.courses at runtime so it can be rendered
+        if (typeof LMS !== "undefined" && LMS.courses) {
+          LMS.courses.push({
+            id: courseId,
+            title: courseFields.title,
+            instructor: live.name,
+            category: courseFields.category,
+            level: courseFields.level,
+            rating: 0,
+            reviews: 0,
+            hours: courseFields.hours,
+            lectures: courseFields.lectures,
+            students: 0,
+            price: "Free",
+            badge: "",
+            desc: courseFields.desc,
+            outcomes: courseFields.outcomes
+          });
+        }
+
+        persistRecord({
+          ...live,
+          role: live.role === "student" ? "both" : live.role === "teacher" ? "teacher" : "both",
+          teaching,
+          customCourses,
+          teachProfile: { headline, bio, customCourse: courseFields }
+        });
+
+        deskToast("Your course has been submitted to the site!");
         location.href = "instructor-hub.html";
       });
     }
@@ -1993,38 +2108,47 @@
       location.href = "login.html?role=teacher";
     } else {
       const rec = activeRecord() || persistRecord(normalizeRecord(user));
-      const teaching = LMS.courses.filter((c) => rec.teaching.includes(c.id));
+      // Build teaching list: first try LMS.courses, then fallback to customCourses
+      const teaching = rec.teaching.map((id) => {
+        const catalogCourse = LMS.courses.find((c) => c.id === id);
+        if (catalogCourse) return catalogCourse;
+        const custom = (rec.customCourses || []).find((c) => c.id === id);
+        if (custom) return { ...custom, students: custom.students || 0, isCustom: true };
+        return null;
+      }).filter(Boolean);
       const learners = teaching.reduce((n, c) => n + (c.students || 0), 0);
       const letter = (rec.name || "T").trim().charAt(0).toUpperCase();
       const panel = (id) => {
         if (rec.teachStatus !== "approved") {
           return `<div class="info-card">
             <h2 class="serif" style="font-size:28px;color:var(--navy)">Instructor hub is locked</h2>
-            <p class="muted" style="margin:10px 0 16px">This campus is free — still, the steward must grant permission before you teach. Status: <b>${rec.teachStatus === "pending" ? "waiting on steward" : "not requested"}</b>.</p>
-            <a class="btn btn-coral" href="teach.html#apply">Ask to teach for free</a>
+            <p class="muted" style="margin:10px 0 16px">This campus is free — still, the admin must grant permission before you can upload courses. Status: <b>${rec.teachStatus === "pending" ? "waiting on admin" : "not requested"}</b>.</p>
+            <a class="btn btn-coral" href="teach.html#apply">Request permission to teach</a>
           </div>`;
         }
         if (id === "courses") {
           return `<h2 class="serif" style="font-size:28px;color:var(--navy);margin-bottom:8px">Your courses</h2>
-            <p class="muted" style="margin-bottom:16px">Free to host. You may teach ledgers you already hold.</p>
+            <p class="muted" style="margin-bottom:16px">Your uploaded courses. Free to host, free to teach.</p>
             ${
               teaching.length
                 ? teaching
                     .map((c) => {
                       const img = courseImg(c);
+                      const studentCount = (c.students || 0).toLocaleString();
+                      const badge = c.isCustom ? ' <span style="background:var(--teal);color:#fff;padding:2px 8px;border-radius:8px;font-size:12px">Your course</span>' : '';
                       return `<article class="hub-course">
-                        ${img ? `<img src="${img}" alt="">` : ""}
+                        ${img ? `<img src="${img}" alt="">` : `<div style="width:88px;height:64px;background:var(--navy);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:700">${(c.title || "C").charAt(0)}</div>`}
                         <div>
-                          <b>${c.title}</b>
-                          <p class="muted">${c.level} · ${c.students.toLocaleString()} learners on this topic · $0</p>
+                          <b>${c.title}</b>${badge}
+                          <p class="muted">${c.level} · ${studentCount} learners · Free</p>
                           <a class="btn btn-navy" href="course.html?id=${c.id}">Open room</a>
                         </div>
                       </article>`;
                     })
                     .join("")
-                : `<p class="muted">No teaching courses yet.</p>`
+                : `<p class="muted">No courses uploaded yet.</p>`
             }
-            <p style="margin-top:16px"><a class="btn btn-ghost" href="teach.html#apply">Add a course you hold</a></p>`;
+            <p style="margin-top:16px"><a class="btn btn-ghost" href="teach.html#apply">Upload a new course</a></p>`;
         }
         if (id === "profile") {
           return `<h2 class="serif" style="font-size:28px;color:var(--navy);margin-bottom:8px">Public profile</h2>
@@ -2039,14 +2163,14 @@
         return `<h2 class="serif" style="font-size:28px;color:var(--navy);margin-bottom:6px">Welcome, ${rec.name.split(" ")[0] || "guide"}</h2>
           <p class="muted" style="margin-bottom:20px">Instructor hub · everything on this campus stays free.</p>
           <div class="teach-stats">
-            <div><b>${teaching.length}</b><span>Courses you guide</span></div>
+            <div><b>${teaching.length}</b><span>Courses you uploaded</span></div>
             <div><b>${learners.toLocaleString()}</b><span>Learners on those topics</span></div>
-            <div><b>$0</b><span>Price for every seat</span></div>
-            <div><b>Open</b><span>Steward permission</span></div>
+            <div><b>Free</b><span>Price for every seat</span></div>
+            <div><b>Open</b><span>Admin permission</span></div>
           </div>
           <div class="info-card" style="margin-top:18px">
             <h3>${rec.teachProfile.headline || "Instructor"}</h3>
-            <p class="muted" style="margin-top:8px">${rec.teachProfile.bio || "Add a bio on your apply page."}</p>
+            <p class="muted" style="margin-top:8px">${rec.teachProfile.bio || "Add a bio on your teach page."}</p>
           </div>`;
       };
       const paint = (id) => {

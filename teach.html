@@ -18,8 +18,8 @@
     <div class="wrap teach-hero-grid">
       <div>
         <p class="kicker">Free campus · no fees</p>
-        <h1 class="serif">Come teach on this desk. Keep every seat free.</h1>
-        <p class="muted" style="margin:14px 0 22px;max-width:520px">LMS Academy does not sell courses. You guide learners who already hold a ledger — after the steward grants permission. No payouts, no price tags.</p>
+        <h1 class="serif">Come teach on this desk. Upload your own course.</h1>
+        <p class="muted" style="margin:14px 0 22px;max-width:520px">LMS Academy does not sell courses. Create your own course, get admin permission, then share it with learners — all free.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <a class="btn btn-coral btn-lg" href="#apply">Become an instructor</a>
           <a class="btn btn-ghost btn-lg" href="instructor-hub.html">Open instructor hub</a>
@@ -33,32 +33,32 @@
     <div class="wrap">
       <div class="teach-stats">
         <div><b>Always $0</b><span>Learning and teaching stay free</span></div>
-        <div><b>2 seats</b><span>Each student holds two courses at a time</span></div>
-        <div><b>Steward yes</b><span>You teach only after permission</span></div>
-        <div><b>Hold first</b><span>You must already sit the course you teach</span></div>
+        <div><b>Your course</b><span>Upload your own original course</span></div>
+        <div><b>Admin yes</b><span>You teach only after admin permission</span></div>
+        <div><b>Free campus</b><span>No payouts, no price tags</span></div>
       </div>
     </div>
   </section>
 
   <section class="section" style="padding-top:0">
     <div class="wrap">
-      <h2 class="serif" style="font-size:32px;color:var(--navy);text-align:center;margin-bottom:8px">How a free classroom starts</h2>
-      <p class="muted" style="text-align:center;margin-bottom:28px">Three doors. No checkout.</p>
+      <h2 class="serif" style="font-size:32px;color:var(--navy);text-align:center;margin-bottom:8px">How to upload your course</h2>
+      <p class="muted" style="text-align:center;margin-bottom:28px">Three steps. No checkout.</p>
       <div class="teach-steps">
         <article>
           <span>1</span>
-          <h3>Seat the course</h3>
-          <p>Pick a free catalog course and place it on your student desk. You cannot teach a ledger you do not hold.</p>
+          <h3>Create your course</h3>
+          <p>Fill in your course details — title, description, category, and what students will learn. This is your original course, not from the catalog.</p>
         </article>
         <article>
           <span>2</span>
-          <h3>Write your profile</h3>
-          <p>Headline and a short about-you. This is your campus pass as a guide — not a shop page.</p>
+          <h3>Request admin permission</h3>
+          <p>Send your course details to the admin for review. Your course stays locked until admin gives permission.</p>
         </article>
         <article>
           <span>3</span>
-          <h3>Ask the steward</h3>
-          <p>Email campus admin. When they say yes, the instructor hub opens and you may teach that course at no cost.</p>
+          <h3>Submit your course</h3>
+          <p>Once admin approves, submit your course to the site. It goes live on your instructor hub.</p>
         </article>
       </div>
     </div>
@@ -73,12 +73,12 @@
           <p>There is nothing to sell. Learners join free, you teach free. The room stays a campus, not a marketplace.</p>
         </article>
         <article>
-          <h3>A small, real desk</h3>
-          <p>Students keep only two courses at a time. You meet people who chose your ledger on purpose.</p>
+          <h3>Your original course</h3>
+          <p>Upload your own course content. You are the creator and guide of your own material.</p>
         </article>
         <article>
-          <h3>Original rooms</h3>
-          <p>Lessons stay written for this academy. You are a guide on a course you already practice, not a rented video host.</p>
+          <h3>Admin reviewed</h3>
+          <p>Every course is reviewed by admin before going live. Quality is maintained across the campus.</p>
         </article>
       </div>
     </div>
@@ -86,13 +86,13 @@
 
   <section class="section" id="apply">
     <div class="wrap page-head" style="padding-top:0">
-      <h2 class="serif" style="font-size:32px;color:var(--navy)">Ask to teach</h2>
-      <p class="muted" style="max-width:640px">Build the profile, pick a course you already hold, then email the steward. The hub stays locked until permission.</p>
+      <h2 class="serif" style="font-size:32px;color:var(--navy)">Upload your course</h2>
+      <p class="muted" style="max-width:640px">Fill in your profile and course details, request admin permission, then submit your course after approval.</p>
     </div>
     <div class="wrap teach-grid">
       <form class="auth-card" id="teach-form" style="width:100%">
         <h2 class="serif" style="font-size:26px;color:var(--navy)">Instructor profile</h2>
-        <p class="muted" style="margin:8px 0 16px">Free to apply. Free to teach. The steward still has to open the door.</p>
+        <p class="muted" style="margin:8px 0 16px">Free to apply. Free to teach. Admin must approve first.</p>
         <div class="teach-banner" id="teach-status" hidden></div>
         <div class="field">
           <label for="teach-headline">Headline</label>
@@ -100,20 +100,54 @@
         </div>
         <div class="field">
           <label for="teach-bio">About you</label>
-          <textarea id="teach-bio" name="bio" rows="4" placeholder="What you have taught, and how you run a room."></textarea>
+          <textarea id="teach-bio" name="bio" rows="3" placeholder="What you have taught, and how you run a room."></textarea>
+        </div>
+
+        <hr style="margin:20px 0;border:none;border-top:1px solid var(--line)">
+        <h3 class="serif" style="font-size:22px;color:var(--navy);margin-bottom:12px">Your course details</h3>
+
+        <div class="field">
+          <label for="teach-course-title">Course title</label>
+          <input id="teach-course-title" name="courseTitle" placeholder="e.g. Complete React Masterclass" required />
         </div>
         <div class="field">
-          <label for="teach-course">Course you will teach</label>
-          <select id="teach-course" name="course"></select>
-          <p class="field-hint is-on" id="teach-hold-hint" style="display:none"></p>
+          <label for="teach-course-category">Category</label>
+          <select id="teach-course-category" name="courseCategory"></select>
         </div>
-        <button class="btn btn-navy btn-lg" style="width:100%" type="submit" id="teach-ask">Email admin for permission</button>
-        <button class="btn btn-teal btn-lg" style="width:100%;margin-top:8px;display:none" type="button" id="teach-unlock">Admin said yes — open my hub</button>
-        <p style="margin-top:12px;font-size:14px">Need the course on your desk first? <a href="courses.html" style="color:var(--teal-d);font-weight:700">Select a free course</a></p>
+        <div class="field">
+          <label for="teach-course-level">Level</label>
+          <select id="teach-course-level" name="courseLevel">
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="teach-course-desc">Course description</label>
+          <textarea id="teach-course-desc" name="courseDesc" rows="4" placeholder="Describe what your course covers and who it is for."></textarea>
+        </div>
+        <div class="field">
+          <label for="teach-course-outcomes">What students will learn</label>
+          <textarea id="teach-course-outcomes" name="courseOutcomes" rows="3" placeholder="List the key outcomes, one per line."></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field">
+            <label for="teach-course-hours">Estimated hours</label>
+            <input id="teach-course-hours" name="courseHours" type="number" min="1" placeholder="e.g. 10" />
+          </div>
+          <div class="field">
+            <label for="teach-course-lectures">Number of lectures</label>
+            <input id="teach-course-lectures" name="courseLectures" type="number" min="1" placeholder="e.g. 15" />
+          </div>
+        </div>
+
+        <button class="btn btn-navy btn-lg" style="width:100%;margin-top:8px" type="submit" id="teach-ask">Request admin permission</button>
+        <button class="btn btn-teal btn-lg" style="width:100%;margin-top:8px;display:none" type="button" id="teach-unlock">Admin said yes — unlock my hub</button>
+        <button class="btn btn-coral btn-lg" style="width:100%;margin-top:8px;display:none" type="button" id="teach-submit-course">Submit your course to site</button>
       </form>
       <div>
         <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" alt="" style="width:100%;height:280px;object-fit:cover;border-radius:20px">
-        <p class="muted" style="margin-top:12px">No one is charged. The steward only checks that you hold the course and can guide it.</p>
+        <p class="muted" style="margin-top:12px">No one is charged. The admin reviews your course to ensure quality for learners.</p>
       </div>
     </div>
   </section>

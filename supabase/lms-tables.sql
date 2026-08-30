@@ -20,6 +20,13 @@ create table if not exists public.lms_teacher_courses (
   course_id text not null,
   course_title text,
   headline text,
+  course_category text,
+  course_level text,
+  course_desc text,
+  course_outcomes text,
+  course_hours integer,
+  course_lectures integer,
+  is_custom boolean default true,
   provided_at timestamptz default now(),
   unique (email, course_id)
 );
